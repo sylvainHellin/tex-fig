@@ -40,6 +40,15 @@
 % Target width of a figure; the including document may override it.
 \providecommand{\fkfigwidth}{\linewidth}
 
+% Alignment helpers, so an arrow between two nodes can be exactly horizontal or
+% exactly vertical without hand-tuned coordinates.
+%   \node[...] at (\fkrow{23.2}{cardPc.east}) {...};  % x 23.2, y of cardPc.east
+%   \node[...] at (\fkcol{llm.south}{4.1}) {...};     % x of llm.south, y 4.1
+% Declare the node you align to first; a fitted group counts, since a node
+% declared inside a pgfonlayer block is available to everything after it.
+\newcommand{\fkrow}[2]{#1,0 |- #2}
+\newcommand{\fkcol}[2]{0,#2 -| #1}
+
 % A literal value inside a field line.
 \newcommand{\fklit}[1]{\textcolor{appleBlue!55!black}{#1}}
 % The darkened text tone every accent colour uses for type.

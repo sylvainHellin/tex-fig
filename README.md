@@ -53,6 +53,7 @@ Pick colours by role and keep the mapping constant across the figures of one pap
 - `fkarrow`, `fkarrowc={colour}`, `fkarrowdashed`, `fkarrowdashedc={colour}`: arrows.
 - `fkelbow`: adds the corner radius an orthogonal route needs, used with the `-|` and `|-` path operators.
 - `fkedgelabel`, `fkedgelabelc={colour}`: a label riding on an arrow, with a white fill so it stays legible where it crosses an edge.
+- `\fkrow{<x>}{<node.anchor>}`, `\fkcol{<node.anchor>}{<y>}`: place a node on the line of another one, so the arrow between them is horizontal or vertical by construction. Declare the node you align to first; a fitted group counts.
 - `\fklit{...}`: a literal value inside a field line.
 - `\fkfigwidth`: the target width, defaulting to `\linewidth`.
 

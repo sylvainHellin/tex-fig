@@ -3,6 +3,11 @@
 %% blue for what the environment offers, pink for what the model produces,
 %% grey for what the runtime executes.
 %%
+%% The cards are placed first, then the group boxes fitted around them, and only
+%% then the single blocks, each pinned with \fkrow to the group or card it talks
+%% to, so User, Inputs and LLM share one line and Python Code and the interpreter
+%% share another. Every arrow between them is exactly horizontal by construction.
+%%
 %% Requires figkit.sty. Input inside a figure* environment:
 %%   \input{figures/codeact-loop}
 \providecommand{\fkfigwidth}{\linewidth}
@@ -10,11 +15,9 @@
 \begin{tikzpicture}[font=]
 
 % ===================================================================
-% LEFT: the user, what the user supplies, what the environment offers
+% Cards
 % ===================================================================
-\node[fkblock={appleGray}{2.2cm}] (user) at (0,9.0) {User};
-
-% --- Inputs -------------------------------------------------------
+% --- what the user supplies ---------------------------------------
 \node[fkcardtitlec=appleGreen] (qTitle) at (3.6,12.0) {Question};
 \node[fkprose, text width=4.6cm] (qBody) at (3.6,11.55)
       {e.g. `What is the total volume of concrete used for the foundation?'};
@@ -22,28 +25,13 @@
 \node[fkprose, text width=4.6cm] (bBody) at (3.6,8.95)
       {e.g. \texttt{duplex\_house/arc.ifc}};
 
-\begin{scope}[on background layer]
-  \node[fkcardc=appleGreen, fit=(qTitle)(qBody)] (cardQ) {};
-  \node[fkcardc=appleGreen, fit=(bTitle)(bBody)] (cardB) {};
-\end{scope}
-
-% --- Resources ----------------------------------------------------
+% --- what the environment offers ----------------------------------
 \node[fkcardtitlec=appleBlue] (tTitle) at (3.6,5.6) {Tools};
 \node[fkprose, text width=4.6cm] (tBody) at (3.6,5.15)
       {e.g. \texttt{categorize\_element\_by\_properties}};
 \node[fkcardtitlec=appleBlue] (sTitle) at (3.6,3.2) {Special tool};
 \node[fkprose, text width=4.6cm] (sBody) at (3.6,2.75)
       {\texttt{query\_ifcopenshell\_documentation}};
-
-\begin{scope}[on background layer]
-  \node[fkcardc=appleBlue, fit=(tTitle)(tBody)] (cardT) {};
-  \node[fkcardc=appleBlue, fit=(sTitle)(sBody)] (cardS) {};
-\end{scope}
-
-% ===================================================================
-% RIGHT: the loop itself
-% ===================================================================
-\node[fkblock={applePink}{3.4cm}] (llm) at (14.2,10.6) {LLM};
 
 % --- what the model produces --------------------------------------
 \node[fkcardtitlec=applePink] (thTitle) at (14.8,6.9) {Thoughts};
@@ -53,47 +41,57 @@
 \node[fkprose, text width=4.4cm] (pcBody) at (14.8,3.85)
       {e.g. \texttt{"import ifcopenshell model = ifcopenshell.open("...}};
 
-\begin{scope}[on background layer]
-  \node[fkcardc=applePink, fit=(thTitle)(thBody)] (cardTh) {};
-  \node[fkcardc=applePink, fit=(pcTitle)(pcBody)] (cardPc) {};
-\end{scope}
-
-% --- what the runtime executes ------------------------------------
-\node[fkblock={appleDarkGray}{3.6cm}] (pyint) at (23.2,4.1) {Python\\Interpreter};
-\node[fkblock={appleDarkGray}{3.6cm}] (evres) at (23.2,8.0) {Evaluation\\Result};
-
-% ===================================================================
-% TOP: what comes back out
-% ===================================================================
+% --- what comes back out ------------------------------------------
 \node[fkcardtitlec=applePink] (aTitle) at (13.6,15.0) {Answer};
 \node[fkprose, text width=4.4cm] (aBody) at (13.6,14.55)
       {e.g. `33\,m$^3$ of concrete were used for the foundation'};
 
 \begin{scope}[on background layer]
-  \node[fkcardc=applePink, fit=(aTitle)(aBody)] (cardA) {};
+  \node[fkcardc=appleGreen, fit=(qTitle)(qBody)]   (cardQ)  {};
+  \node[fkcardc=appleGreen, fit=(bTitle)(bBody)]   (cardB)  {};
+  \node[fkcardc=appleBlue,  fit=(tTitle)(tBody)]   (cardT)  {};
+  \node[fkcardc=appleBlue,  fit=(sTitle)(sBody)]   (cardS)  {};
+  \node[fkcardc=applePink,  fit=(thTitle)(thBody)] (cardTh) {};
+  \node[fkcardc=applePink,  fit=(pcTitle)(pcBody)] (cardPc) {};
+  \node[fkcardc=applePink,  fit=(aTitle)(aBody)]   (cardA)  {};
 \end{scope}
 
 % ===================================================================
-% Group boxes
+% Group boxes around the cards
 % ===================================================================
 \begin{pgfonlayer}{grouping}
-  % the loop box first, so the Outputs group inside it draws on top
-  \node[fkgroup={appleDark}{CodeAct loop}, inner sep=0.85cm,
-        fit=(llm)(cardTh)(cardPc)(pyint)(evres)] (loop) {};
   \node[fkgroup={appleGreen}{Inputs},      fit=(cardQ)(cardB)]   (grpIn)  {};
   \node[fkgroup={appleBlue}{Resources},    fit=(cardT)(cardS)]   (grpRes) {};
-  \node[fkgroup={applePink}{Outputs},      fit=(cardTh)(cardPc)] (grpOut) {};
   \node[fkgroup={applePink}{Final output}, fit=(cardA)]          (grpAns) {};
+\end{pgfonlayer}
+
+% ===================================================================
+% Blocks, each on the line of what it exchanges with
+% ===================================================================
+\node[fkblock={appleGray}{2.2cm}]     (user)  at (\fkrow{0}{grpIn.west})    {User};
+\node[fkblock={applePink}{3.4cm}]     (llm)   at (\fkrow{14.2}{grpIn.east}) {LLM};
+\node[fkblock={appleDarkGray}{3.6cm}] (pyint) at (\fkrow{23.2}{cardPc.east})
+      {Python\\Interpreter};
+\node[fkblock={appleDarkGray}{3.6cm}] (evres) at (\fkcol{pyint.north}{8.6})
+      {Evaluation\\Result};
+
+% the loop box is drawn before the Outputs group it contains, so its fill does
+% not cover the inner box: on one layer, the later node wins
+\begin{pgfonlayer}{grouping}
+  \node[fkgroup={appleDark}{CodeAct loop}, inner sep=0.85cm,
+        fit=(llm)(cardTh)(cardPc)(pyint)(evres)] (loop) {};
+  \node[fkgroup={applePink}{Outputs}, fit=(cardTh)(cardPc)] (grpOut) {};
 \end{pgfonlayer}
 
 % ===================================================================
 % Wiring
 % ===================================================================
 % the user asks, and the question plus the model reach the LLM
-\draw[fkarrowc=appleGreen] (user.east) -- (grpIn.west);
-\draw[fkarrowc=appleGreen, fkelbow] (grpIn.east) -- ++(0.9,0) |- ($(llm.west)+(0,0.30)$);
+\draw[fkarrowc=appleGreen] (user.east)  -- (grpIn.west);
+\draw[fkarrowc=appleGreen] (grpIn.east) -- (llm.west);
 % the environment offers tools to the model and a runtime to execute in
-\draw[fkarrowc=appleBlue, fkelbow] (grpRes.east) -- ++(1.9,0) |- ($(llm.west)+(0,-0.30)$);
+\draw[fkarrowc=appleBlue, fkelbow] (grpRes.east) -- ++(1.9,0)
+      |- ($(llm.west)+(0,-0.40)$);
 \draw[fkarrowc=appleBlue, fkelbow] ($(grpRes.east)+(1.9,0)$) |- ($(loop.south)+(0,-0.7)$)
       -| (pyint.south);
 % the model emits a thought and the code that follows from it
