@@ -63,6 +63,8 @@
     draw=appleGray!30,
     line width=0.6pt,
     inner sep=0.40cm},
+  % Same panel tinted in an accent colour.
+  fkpanelc/.style={fkpanel, fill=#1!7, draw=#1!30},
   % Dashed coloured group box with its title sitting above the frame.
   % Usage: node[fkgroup={appleGreen}{Inputs}, fit=(a)(b)] {};
   fkgroup/.style 2 args={
@@ -134,11 +136,41 @@
     inner sep=6pt,
     text=#1!55!black,
     font=\small},
+  % Small solid tag, for the name of a component or a phase. Reads as a chip,
+  % so it labels a panel from inside it rather than sitting above the frame.
+  fktag/.style={
+    rounded corners=4pt,
+    fill=#1!75!black,
+    text=white,
+    inner xsep=6pt,
+    inner ysep=3.5pt,
+    font=\small},
+  % Icon canvas: a tinted rounded square to draw a small glyph inside.
+  fkicon/.style={
+    rounded corners=4pt,
+    fill=#1!14,
+    draw=#1!45,
+    line width=0.7pt,
+    minimum size=1.6cm,
+    inner sep=0pt},
+  % The strokes of that glyph: an outlined shape and a plain rule.
+  fkglyph/.style={
+    rounded corners=1.5pt,
+    draw=#1!85,
+    line width=1.1pt},
+  fkrule/.style={draw=#1!55, line width=0.7pt},
   % Grey gloss set underneath a panel or a group.
   fkcaption/.style={
     font=\scriptsize,
     text=appleGray,
     align=center},
+  % Free-standing label in the document tone, for something named but not boxed:
+  % the caption of an icon, the input or the output at the end of an arrow.
+  fklabel/.style={
+    font=\small,
+    text=appleDarkGray,
+    align=center},
+  fklabelc/.style={fklabel, text=#1!62!black},
   % Arrows. fkelbow adds the corner radius an orthogonal route needs.
   fkarrow/.style={
     -{Latex[length=2.6mm,width=1.9mm]},

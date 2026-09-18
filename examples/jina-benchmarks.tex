@@ -1,0 +1,112 @@
+%% jina-benchmarks.tex -- the Jina-OCR-v1 benchmark panel (arXiv 2609.03181,
+%% fig. 2), redrawn with figkit-plots: two bar panels and a pair of scatter
+%% plots sharing one axis, with the model the figure is about picked out in the
+%% accent colour and every other model in grey.
+%%
+%% Requires figkit-plots.sty. Input inside a figure* environment:
+%%   \input{figures/jina-benchmarks}
+\providecommand{\fkfigwidth}{\linewidth}
+\resizebox{\fkfigwidth}{!}{%
+\begin{tikzpicture}[font=]
+
+\pgfplotsset{
+  % the eight models, bottom to top, since the category axis runs upward
+  % the tick list is given by name rather than by ytick=data, which would only
+  % pick up the categories the first series happens to plot
+  jina models/.style={symbolic y coords={PaddleOCR-VL-1.6, dots.mocr,
+      HunyuanOCR-1.5, olmOCR-2, LightOnOCR-2, DeepSeek-OCR-2, DeepSeek-OCR,
+      Jina-OCR-v1},
+    ytick={PaddleOCR-VL-1.6, dots.mocr, HunyuanOCR-1.5, olmOCR-2,
+      LightOnOCR-2, DeepSeek-OCR-2, DeepSeek-OCR, Jina-OCR-v1}},
+}
+
+% ===================================================================
+% (a) how many pixels one visual token has to carry
+% ===================================================================
+\begin{axis}[fkbaraxis, jina models, at={(0cm,0cm)}, anchor=south west,
+  width=6.2cm, height=8.2cm,
+  xmode=log, xmin=500, xmax=5200, log origin=infty,
+  xtick={500,1000,2000,4000}, xticklabels={500,1k,2k,4k},
+  xlabel={Pixels per visual token},
+  yticklabels={PaddleOCR-VL-1.6, dots.mocr, HunyuanOCR-1.5, olmOCR-2,
+    LightOnOCR-2, DeepSeek-OCR-2, DeepSeek-OCR, \textbf{Jina-OCR-v1}}]
+  \addplot[fkbar=appleGray] coordinates {
+    (783,PaddleOCR-VL-1.6) [783]
+    (784,dots.mocr) [784]
+    (1022,HunyuanOCR-1.5) [1,022]
+    (784,olmOCR-2) [784]
+    (783,LightOnOCR-2) [783]
+    (4098,DeepSeek-OCR-2) [4,098]
+    (3849,DeepSeek-OCR) [3,849]};
+  \addplot[fkbar=applePurple] coordinates {(3887,Jina-OCR-v1) [3,887]};
+\end{axis}
+
+% ===================================================================
+% (b) what that buys in pages per second
+% ===================================================================
+\begin{axis}[fkbaraxis, jina models, at={(8.6cm,0cm)}, anchor=south west,
+  width=6.2cm, height=8.2cm,
+  xmin=0, xmax=3.2, xtick={0,1,2,3},
+  xlabel={Throughput (pages/s)}, yticklabels={,,,,,,,}]
+  \addplot[fkbar=appleGray] coordinates {
+    (0.33,PaddleOCR-VL-1.6) [0.33]
+    (0.55,dots.mocr) [0.55]
+    (0.83,HunyuanOCR-1.5) [0.83]
+    (1.22,olmOCR-2) [1.22]
+    (1.33,LightOnOCR-2) [1.33]
+    (1.50,DeepSeek-OCR-2) [1.50]
+    (2.10,DeepSeek-OCR) [2.10]};
+  \addplot[fkbar=applePurple] coordinates {(2.57,Jina-OCR-v1) [2.57]};
+\end{axis}
+
+% ===================================================================
+% (c) quality against the parameters that have to be active to get it
+% ===================================================================
+\begin{axis}[fkplotaxis, at={(17.4cm,4.9cm)}, anchor=south west,
+  width=7.4cm, height=4.1cm,
+  xmode=log, xmin=0.45, xmax=34, xtick={0.5,1,2,5,10,20},
+  xticklabels={,,,,,}, ymin=74, ymax=88.5, ytick={76,80,84,88},
+  ylabel={olmOCR-Bench}]
+  \addplot[fktrend] coordinates {(0.48,74.5) (0.57,83.2) (4,86.0) (34,88.4)};
+  \addplot[fkpoint=appleGray] coordinates {
+    (0.62,84.0) (1.0,82.3) (1.2,83.2) (4.0,86.0) (7.0,82.4) (8.0,82.4)
+    (0.57,76.2) (1.2,75.6) (0.6,74.9)};
+  \addplot[fkline=applePurple] coordinates {(0.57,83.2) (1.2,83.2) (4.0,86.0)};
+  \addplot[fkstar=applePurple] coordinates {(0.57,83.2)};
+  \node[fkpointlabelc=applePurple, anchor=south] at (axis cs:0.60,85.2)
+    {Jina-OCR-v1};
+  \node[fkpointlabel, anchor=west]       at (axis cs:0.63,84.1) {dots.mocr};
+  \node[fkpointlabel, anchor=west]       at (axis cs:1.08,82.3) {LightOnOCR-2};
+  \node[fkpointlabel, anchor=north]      at (axis cs:1.5,81.9)  {MinerU2.5-Pro-1.2B};
+  \node[fkpointlabel, anchor=south]      at (axis cs:4.0,86.5)  {chandra-ocr-2};
+  \node[fkpointlabel, anchor=south]      at (axis cs:7.0,83.0)  {Infinity-Parser-7B};
+  \node[fkpointlabel, anchor=west]       at (axis cs:8.6,82.0)  {olmOCR-2};
+  \node[fkpointlabel, anchor=west]       at (axis cs:0.63,76.2) {DeepSeek-OCR};
+  \node[fkpointlabel, anchor=west]       at (axis cs:1.3,75.6)  {MinerU2.5-1.2B};
+  \node[fkpointlabel, anchor=north west] at (axis cs:0.5,74.8)  {GLM-OCR};
+\end{axis}
+
+\begin{axis}[fkplotaxis, at={(17.4cm,0cm)}, anchor=south west,
+  width=7.4cm, height=4.1cm,
+  xmode=log, xmin=0.45, xmax=34, xtick={0.5,1,2,5,10,20},
+  ymin=88, ymax=97.5, ytick={88,92,96},
+  xlabel={Active parameters (B)}, ylabel={OmniDocBench}]
+  \addplot[fktrend] coordinates {(0.48,88.2) (0.57,91.0) (0.9,96.3) (34,97.4)};
+  \addplot[fkpoint=appleGray] coordinates {(0.62,90.2) (0.9,96.3) (1.0,94.7) (21,89.8)};
+  \addplot[fkline=applePurple] coordinates {(0.57,91.0) (0.9,96.3)};
+  \addplot[fkstar=applePurple] coordinates {(0.57,91.0)};
+  \node[fkpointlabelc=applePurple, anchor=west] at (axis cs:0.66,91.0) {Jina-OCR-v1};
+  \node[fkpointlabel, anchor=north west] at (axis cs:0.6,89.9)  {DeepSeek-OCR-2};
+  \node[fkpointlabel, anchor=west]       at (axis cs:0.97,96.3) {PaddleOCR-VL-1.6};
+  \node[fkpointlabel, anchor=west]       at (axis cs:1.08,94.7) {HunyuanOCR-1.5};
+  \node[fkpointlabel, anchor=south east] at (axis cs:19,90.3)   {Qwen3-VL-235B};
+\end{axis}
+
+% ===================================================================
+% Panel letters
+% ===================================================================
+\node[fkpanelletter] at (1.6,9.0)  {(a)};
+\node[fkpanelletter] at (9.4,9.0)  {(b)};
+\node[fkpanelletter] at (17.6,9.0) {(c)};
+
+\end{tikzpicture}}

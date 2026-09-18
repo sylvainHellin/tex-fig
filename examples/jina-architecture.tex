@@ -1,0 +1,87 @@
+%% jina-architecture.tex -- the Jina-OCR-v1 pipeline (arXiv 2609.03181, fig. 1),
+%% redrawn with figkit: a page and its tiles enter a vision encoder, the tokens
+%% reach an MoE decoder, and its hidden state drives a speculative draft head.
+%%
+%% Blue carries the perception path, orange the speculative decoding block.
+%% The page icon is placed first and everything on the main line is pinned to it
+%% with \fkrow, so the four arrows across the figure are horizontal.
+%%
+%% Requires figkit.sty. Input inside a figure* environment:
+%%   \input{figures/jina-architecture}
+\providecommand{\fkfigwidth}{\linewidth}
+\resizebox{\fkfigwidth}{!}{%
+\begin{tikzpicture}[font=]
+
+% ===================================================================
+% The document page and the tiles it is cut into
+% ===================================================================
+\node[fkicon=appleBlue, minimum width=2.2cm, minimum height=3.1cm] (page) at (0,0) {};
+\draw[fkglyph=appleBlue] ($(page.north west)+(0.25,-0.30)$) rectangle ++(0.65,-0.55);
+\draw[fkrule=appleBlue]  ($(page.north west)+(1.05,-0.42)$) -- ++(0.88,0);
+\draw[fkrule=appleBlue]  ($(page.north west)+(1.05,-0.72)$) -- ++(0.88,0);
+\draw[fkrule=appleBlue]  ($(page.north west)+(0.25,-1.28)$) -- ++(1.68,0);
+\draw[fkrule=appleBlue]  ($(page.north west)+(0.25,-1.62)$) -- ++(1.68,0);
+\draw[fkglyph=appleBlue] ($(page.south east)+(-0.95,0.90)$) rectangle ++(0.62,-0.55);
+\node[fklabel, below=6pt of page] {document page};
+
+\node[fkicon=appleBlue, minimum size=1.35cm] (tiles) at (3.4,3.4) {};
+\foreach \dx/\dy in {-0.24/0.24, 0.24/0.24, -0.24/-0.24, 0.24/-0.24}
+  \fill[appleBlue!45, rounded corners=1pt]
+        ($(tiles.center)+(\dx-0.19,\dy-0.19)$) rectangle ++(0.38,0.38);
+\node[fklabel, above=6pt of tiles] {$n$ local tiles};
+
+% ===================================================================
+% The two model stages, on the line of the page
+% ===================================================================
+\node[fkblock={appleBlue}{5.0cm}, minimum height=2.6cm] (enc) at (\fkrow{7.6}{page.east})
+      {\textbf{DeepEncoder}\\[2pt]vision encoder};
+\node[fkblock={appleBlue}{5.6cm}, minimum height=2.6cm] (dec) at (\fkrow{15.4}{page.east})
+      {\textbf{MoE decoder}\\[2pt]3B total $\cdot$ 570M active};
+\node[fklabel, anchor=west] (md) at (\fkrow{19.1}{page.east}) {Markdown};
+\node[fklabel, font=\small\itshape] (instr) at (\fkcol{dec.north}{3.4}) {user instruction};
+
+% ===================================================================
+% The speculative decoding block
+% ===================================================================
+\node[fkblock={appleOrange}{4.6cm}, minimum height=1.1cm] (draft) at (11.6,-6.4)
+      {\textbf{shared draft block}};
+\node[fkblock={appleOrange}{1.3cm}, minimum height=1.1cm] (d1)
+      at (\fkrow{15.0}{draft.east}) {$\hat{x}_{t+1}$};
+\node[fkblock={appleOrange}{1.3cm}, minimum height=1.1cm] (d2)
+      at (\fkrow{16.8}{draft.east}) {$\hat{x}_{t+2}$};
+\node[fkblock={appleOrange}{1.3cm}, minimum height=1.1cm] (d3)
+      at (\fkrow{18.6}{draft.east}) {$\hat{x}_{t+3}$};
+\node[fklabel, anchor=west] (verify) at (\fkrow{19.6}{draft.east}) {verify};
+\node[fktag=appleOrange, anchor=west] (tag) at (9.6,-5.0) {FastMTP};
+\node[fklabelc=appleOrange, anchor=east] (drafts)
+      at (\fkrow{20.3}{tag.east}) {$K{=}3$ drafts};
+
+\begin{pgfonlayer}{grouping}
+  \node[fkpanelc=appleOrange, inner sep=0.45cm,
+        fit=(tag)(drafts)(draft)(verify)] (mtp) {};
+\end{pgfonlayer}
+
+% ===================================================================
+% Wiring
+% ===================================================================
+% the page is tiled, and page and tiles both reach the encoder
+\draw[fkarrow] (page.north) to[bend left=38] (tiles.west);
+\draw[fkarrow] (tiles.east) to[bend left=38] (enc.north);
+\draw[fkarrow] (page.east) -- (enc.west);
+% the visual tokens reach the decoder, which emits Markdown
+\draw[fkarrow] (enc.east) -- (dec.west)
+      node[fkedgelabel, font=\small, text=appleDarkGray, pos=0.5, above=1pt,
+           align=center] {$256 + 100n$\\tokens};
+\draw[fkarrow] (dec.east) -- (md.west);
+\draw[fkarrow] (instr.south) -- (dec.north);
+% and its hidden state drives the draft head
+\draw[fkarrowdashed] (dec.south) -- (dec.south |- mtp.north)
+      node[fkedgelabel, font=\small, text=appleDarkGray, pos=0.55, right=2pt]
+      {hidden state};
+% the draft block proposes K tokens, verified in one pass
+\draw[fkarrowc=appleOrange!75!black] (draft.east) -- (d1.west);
+\draw[fkarrowc=appleOrange!75!black] (d1.east) -- (d2.west);
+\draw[fkarrowc=appleOrange!75!black] (d2.east) -- (d3.west);
+\draw[fkarrowc=appleOrange!75!black] (d3.east) -- (verify.west);
+
+\end{tikzpicture}}

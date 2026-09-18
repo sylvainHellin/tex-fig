@@ -41,7 +41,7 @@ Pick colours by role and keep the mapping constant across the figures of one pap
 
 ## Styles
 
-- `fkpanel`: solid light grey panel behind one column of a picture.
+- `fkpanel`, `fkpanelc={colour}`: solid panel behind one column of a picture, grey or tinted.
 - `fkgroup={colour}{title}`: dashed coloured box with its title above the frame.
 - `fkcard`, `fkcardc={colour}`: white or tinted card, used with `fit=` around its content.
 - `fkcardtitle`, `fkcardtitlec={colour}`, `fkcardsubtitle`: the header of a card and its one-line gloss.
@@ -50,6 +50,9 @@ Pick colours by role and keep the mapping constant across the figures of one pap
 - `fkpill={colour}{width}`, `fkpilltype`: a value label and the smaller type line under it.
 - `fkblock={colour}{width}`: a heavier box for a processing step.
 - `fkcaption`: grey gloss set underneath a panel.
+- `fklabel`, `fklabelc={colour}`: free-standing label in the document tone, for something named but not boxed.
+- `fktag={colour}`: small solid chip, for labelling a panel from inside it.
+- `fkicon={colour}`, `fkglyph={colour}`, `fkrule={colour}`: a tinted canvas for a small icon, and the outlined shapes and rules drawn inside it.
 - `fkarrow`, `fkarrowc={colour}`, `fkarrowdashed`, `fkarrowdashedc={colour}`: arrows.
 - `fkelbow`: adds the corner radius an orthogonal route needs, used with the `-|` and `|-` path operators.
 - `fkedgelabel`, `fkedgelabelc={colour}`: a label riding on an arrow, with a white fill so it stays legible where it crosses an edge.
@@ -61,6 +64,8 @@ Pick colours by role and keep the mapping constant across the figures of one pap
 
 `examples/ocdi-concept.tex` is the OCDI core-concept figure: cards, pills, panels, and arrows aligned so that the ones that can be horizontal are.
 `examples/codeact-loop.tex` is the CodeAct agent loop of the first journal paper, redrawn: dashed group boxes, tinted cards, blocks and orthogonal routing.
+`examples/jina-architecture.tex` reproduces figure 1 of arXiv 2609.03181: icons, curved arrows, a tagged panel and a chain of small blocks.
+`examples/jina-benchmarks.tex` reproduces its figure 2, and is the one plotted figure: two bar panels and two scatter plots.
 
 Build either one on its own with `examples/preview.tex`, which sets a fixed width because `standalone` has no useful `\linewidth`:
 
@@ -68,6 +73,22 @@ Build either one on its own with `examples/preview.tex`, which sets a fixed widt
 cd examples && tectonic -Z search-path=.. -c minimal preview.tex
 pdftoppm -png -r 150 -singlefile preview.pdf out
 ```
+
+## Plots
+
+A figure that carries measured numbers loads `figkit-plots` instead of `figkit`; the plot package requires the node package, so everything above stays available.
+It adds pgfplots and keeps the same split: the package holds the look of an axis, the document holds the data.
+
+- `fkaxis`: the shared look, a frame-free axis with thin grey rules and light grid lines.
+- `fkbaraxis`: horizontal bars against a category axis that carries names rather than a scale. Give the categories with `symbolic y coords` and repeat them in `ytick`, since `ytick=data` only picks up what the first series plots, and print a value at the end of each bar by passing it as `[explicit symbolic]` meta.
+- `fkplotaxis`: a value plot, both axes drawn, grid on the measured axis.
+- `fkbar={colour}`: one bar series. Plot the highlighted category as a second series so it is drawn over the grey one.
+- `fkpoint={colour}`, `fkstar={colour}`: a plain scatter mark and the open five-pointed star for the series the figure argues about.
+- `fkline={colour}`, `fktrend`: a line through the points that form the frontier, and the dashed grey trend behind them.
+- `fkpointlabel`, `fkpointlabelc={colour}`: the name of a point, set beside it with `at (axis cs:x,y)`.
+- `fkpanelletter`: the (a), (b), (c) of a multi-panel figure.
+
+Place several panels by giving each `axis` an explicit `at={(<x>cm,<y>cm)}, anchor=south west` and `scale only axis`, which `fkaxis` sets, so `width` and `height` measure the plot body and the panels line up whatever their labels do.
 
 ## Using it in a paper
 
