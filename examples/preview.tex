@@ -1,0 +1,10 @@
+%% preview.tex -- build one figure on its own, to look at it while drawing.
+%%   cd examples && tectonic -c minimal preview.tex && pdftoppm -png -r 150 preview.pdf out
+%% Point the \input at the figure you are working on.
+\documentclass[border=8pt]{standalone}
+\usepackage{figkit}
+\renewcommand{\fkfigwidth}{20cm}
+\begin{document}
+%\input{ocdi-concept.tex}
+\input{codeact-loop.tex}
+\end{document}

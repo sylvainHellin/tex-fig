@@ -1,0 +1,153 @@
+%% figkit.sty -- colour palette and TikZ node styles for publication figures.
+%% Every style is prefixed fk so nothing collides with a journal class.
+%% See README.md for the recipe and a minimal working example.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{figkit}[2026/09/18 figure kit]
+
+\RequirePackage{xcolor}
+\RequirePackage{tikz}
+\RequirePackage{graphicx}
+
+\usetikzlibrary{positioning, calc, shapes.geometric, arrows.meta, backgrounds,
+                fit, matrix, decorations.pathreplacing, shadows.blur}
+
+% A layer below the background one, so a panel or a group box can be fitted
+% around cards that are themselves drawn on the background layer.
+\pgfdeclarelayer{grouping}
+\pgfsetlayers{grouping,background,main}
+
+% ---------------------------------------------------------------- palette ----
+% Apple system colours: saturated accent plus a near-white tint of each.
+\definecolor{appleBlue}{RGB}{0, 122, 255}
+\definecolor{appleLightBlue}{RGB}{235, 245, 255}
+\definecolor{appleRed}{RGB}{255, 59, 48}
+\definecolor{appleLightRed}{RGB}{255, 235, 235}
+\definecolor{appleGreen}{RGB}{52, 199, 89}
+\definecolor{appleLightGreen}{RGB}{235, 255, 235}
+\definecolor{appleGray}{RGB}{142, 142, 147}
+\definecolor{appleLightGray}{RGB}{242, 242, 247}
+\definecolor{appleDarkGray}{RGB}{44, 44, 46}
+\definecolor{appleDark}{RGB}{28, 28, 30}
+\definecolor{applePurple}{RGB}{175, 82, 222}
+\definecolor{appleLightPurple}{RGB}{243, 233, 255}
+\definecolor{appleOrange}{RGB}{255, 149, 0}
+\definecolor{appleLightOrange}{RGB}{255, 235, 205}
+\definecolor{appleTeal}{RGB}{48, 176, 199}
+\definecolor{appleLightTeal}{RGB}{213, 240, 245}
+\definecolor{applePink}{RGB}{255, 45, 133}
+\definecolor{appleLightPink}{RGB}{255, 232, 241}
+
+% Target width of a figure; the including document may override it.
+\providecommand{\fkfigwidth}{\linewidth}
+
+% A literal value inside a field line.
+\newcommand{\fklit}[1]{\textcolor{appleBlue!55!black}{#1}}
+% The darkened text tone every accent colour uses for type.
+\newcommand{\fkink}[1]{#1!62!black}
+
+% ------------------------------------------------------------ node styles ----
+\tikzset{
+  % Solid light grey panel grouping one column of a picture. Background layer.
+  fkpanel/.style={
+    rounded corners=12pt,
+    fill=appleLightGray!55,
+    draw=appleGray!30,
+    line width=0.6pt,
+    inner sep=0.40cm},
+  % Dashed coloured group box with its title sitting above the frame.
+  % Usage: node[fkgroup={appleGreen}{Inputs}, fit=(a)(b)] {};
+  fkgroup/.style 2 args={
+    rounded corners=10pt,
+    draw=#1!75,
+    fill=#1!4,
+    dash pattern=on 4pt off 3pt,
+    line width=0.9pt,
+    inner sep=0.32cm,
+    label={[font=\small, text=#1!62!black, inner sep=3.5pt]above:#2}},
+  % White rounded card, normally used with fit= around its content nodes.
+  fkcard/.style={
+    rounded corners=8pt,
+    fill=white,
+    draw=appleGray!45,
+    line width=0.7pt,
+    inner sep=9pt},
+  % Same card tinted in an accent colour.
+  fkcardc/.style={fkcard, fill=#1!8, draw=#1!55},
+  % Card header, its accent-coloured variant, and the one-line gloss under it.
+  fkcardtitle/.style={
+    font=\small\ttfamily,
+    text=appleDark,
+    anchor=west,
+    inner sep=0pt},
+  fkcardtitlec/.style={fkcardtitle, text=#1!62!black},
+  fkcardsubtitle/.style={
+    font=\scriptsize\itshape,
+    text=appleGray,
+    anchor=west,
+    inner sep=0pt},
+  % One property, value or example line inside a card.
+  fkfield/.style={
+    font=\footnotesize\ttfamily,
+    text=appleDarkGray,
+    anchor=west,
+    inner sep=0pt},
+  % Running text inside a card, for an example rather than a property.
+  fkprose/.style={
+    font=\scriptsize,
+    text=appleDarkGray,
+    anchor=north west,
+    align=left,
+    inner sep=0pt},
+  % Pill label: 10 percent fill, matching stroke, darkened text.
+  % Usage: node[fkpill={applePurple}{4.7cm}] {Name\\[1pt]{\tiny type}};
+  fkpill/.style 2 args={
+    rounded corners=7pt,
+    fill=#1!10,
+    draw=#1,
+    line width=0.7pt,
+    minimum width=#2,
+    minimum height=0.95cm,
+    align=center,
+    inner sep=4pt,
+    text=#1!62!black,
+    font=\footnotesize\ttfamily},
+  % Secondary line inside a pill: the type of the thing named above.
+  fkpilltype/.style={font=\tiny\ttfamily},
+  % Solid block for a processing step, heavier than a pill.
+  fkblock/.style 2 args={
+    rounded corners=8pt,
+    fill=#1!12,
+    draw=#1!75,
+    line width=0.9pt,
+    minimum width=#2,
+    minimum height=1.25cm,
+    align=center,
+    inner sep=6pt,
+    text=#1!55!black,
+    font=\small},
+  % Grey gloss set underneath a panel or a group.
+  fkcaption/.style={
+    font=\scriptsize,
+    text=appleGray,
+    align=center},
+  % Arrows. fkelbow adds the corner radius an orthogonal route needs.
+  fkarrow/.style={
+    -{Latex[length=2.6mm,width=1.9mm]},
+    line width=0.9pt,
+    draw=appleGray!75,
+    rounded corners=2pt},
+  fkarrowc/.style={fkarrow, draw=#1},
+  fkarrowdashed/.style={fkarrow, dash pattern=on 3pt off 2.2pt},
+  fkarrowdashedc/.style={fkarrowdashed, draw=#1},
+  fkelbow/.style={rounded corners=7pt},
+  % Label riding on an arrow; the white fill keeps it legible over an edge.
+  fkedgelabel/.style={
+    font=\scriptsize\ttfamily,
+    text=appleDarkGray,
+    fill=white,
+    inner sep=1.5pt,
+    rounded corners=2pt},
+  fkedgelabelc/.style={fkedgelabel, text=#1!62!black},
+}
+
+\endinput

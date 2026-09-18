@@ -1,0 +1,131 @@
+%% ocdi-concept.tex -- the core OCDI idea in one picture.
+%%
+%% One document, identified by the hash of its bytes, carries two independent
+%% metadata claim sets (one per source, never merged); each set is attributed to
+%% the agent that produced it and its values point at controlled-vocabulary terms.
+%%
+%% Requires figkit.sty. Input inside a figure* environment:
+%%   \input{figures/ocdi-concept}
+%% The picture is authored 25.5cm wide, so it belongs in figure*, not a single column.
+%% To change the target width, \newcommand{\fkfigwidth}{...} before the \input.
+%% Defaults to \linewidth; standalone has no useful \linewidth, so a test wrapper
+%% must set \fkfigwidth itself.
+\providecommand{\fkfigwidth}{\linewidth}
+\resizebox{\fkfigwidth}{!}{%
+\begin{tikzpicture}[font=]
+
+% ===================================================================
+% LEFT: the document itself
+% ===================================================================
+% The card is placed so that it sits vertically centred in its panel, whose
+% height is set by the tallest column (the pills on the right). Its x is set so
+% that the gap to the middle panel matches the one between the middle and the
+% right panel, which the four edge labels there fix at 96.285pt.
+\node[fkcardtitle, text=appleBlue!60!black] (dTitle) at (-1.8019,7.666)
+      {ocdi:Document};
+\node[fkcardsubtitle]  (dSub)  at (-1.8019,7.266) {identified by the hash of its bytes};
+\node[fkfield] (dF1) at (-1.8019,6.716) {ocdi:hasHash \fklit{"sha256:9f86d0..."}};
+\node[fkfield] (dF2) at (-1.8019,6.316) {ocdi:hasByteSize \fklit{482911}};
+\node[fkfield] (dF3) at (-1.8019,5.916) {ocdi:hasMediaType \fklit{"application/pdf"}};
+
+\begin{scope}[on background layer]
+  \node[fkcard, fit=(dTitle)(dSub)(dF1)(dF2)(dF3)] (cardDoc) {};
+\end{scope}
+
+\node[fkcaption] at (0.8181,1.15) {what the bytes alone determine};
+
+% ===================================================================
+% MIDDLE: two claim sets about that document
+% ===================================================================
+% --- upper card: the connector's claims ---------------------------
+\node[fkcardtitle, text=appleGreen!42!black] (uTitle) at (8.30,10.80)
+      {ocdi:Metadata};
+\node[fkcardsubtitle] (uSub) at (8.30,10.40) {what the connector found};
+\node[fkfield] (uF1) at (8.30,9.85) {ocdi:hasFilePath};
+\node[fkfield] (uV1) at (8.65,9.45) {\fklit{"/LOVT/03 Plaene/A-102-P03.pdf"}};
+\node[fkfield] (uF2) at (8.30,8.90) {ocdi:hasDateOfRecord};
+\node[fkfield] (uV2) at (8.65,8.50) {\fklit{"2026-03-14T09:12Z"}};
+\node[fkfield] (uF3) at (8.30,7.95) {ocdi:hasPresence};
+\node[fkfield] (uV3) at (8.65,7.55) {\fklit{[ startedAt 2026-03-14 ]}};
+
+\begin{scope}[on background layer]
+  \node[fkcard, fit=(uTitle)(uSub)(uF1)(uV1)(uF2)(uV2)(uF3)(uV3)] (cardUp) {};
+\end{scope}
+
+% --- lower card: the parser's claims ------------------------------
+\node[fkcardtitle, text=appleGreen!42!black] (lTitle) at (8.30,4.90)
+      {ocdi:Metadata};
+\node[fkcardsubtitle] (lSub) at (8.30,4.50) {what the parser extracted};
+\node[fkfield] (lF1) at (8.30,3.95) {ocdi:hasDiscipline};
+\node[fkfield] (lF2) at (8.30,3.55) {ocdi:hasOwner};
+\node[fkfield] (lF3) at (8.30,3.15) {ocdi:hasPhase};
+
+\begin{scope}[on background layer]
+  % the extra point pins the right edge to the card above, so the column aligns
+  \node[fkcard, fit={(lTitle)(lSub)(lF1)(lF2)(lF3)
+        ($(cardUp.east |- lF1)+(-0.317,0)$)}] (cardLow) {};
+\end{scope}
+
+\node[fkcaption] at (10.80,1.15) {one claim set per source, never merged};
+
+% --- document to claim sets ---------------------------------------
+\draw[fkarrow] ($(cardDoc.east)+(0,0.35)$) -- (cardUp.west)
+  node[fkedgelabel, pos=0.52] {ocdi:hasMetadata};
+\draw[fkarrow] ($(cardDoc.east)+(0,-0.35)$) -- (cardLow.west)
+  node[fkedgelabel, pos=0.52] {ocdi:hasMetadata};
+
+% --- the parser read what the connector observed ------------------
+\draw[fkarrowdashed] ($(cardLow.north west)+(2.20,0)$) -- ($(cardUp.south west)+(2.20,0)$);
+\node[fkedgelabel, anchor=west] at (10.33,6.20) {ocdi:isDerivedFrom};
+
+% ===================================================================
+% RIGHT: attribution (purple) and controlled vocabulary (orange)
+% ===================================================================
+% The column is set far enough right for the four edge labels to sit in open
+% space between the middle and right panels. Each pill is pinned to the card it
+% belongs to: the connector to the middle of the upper card, the discipline to
+% the middle of the lower card, so both those arrows run exactly horizontal. The
+% parser and the owner sit 1.40cm above and below the discipline, so their two
+% arrows leave the lower card at mirrored angles.
+\node[fkpill={applePurple}{4.70cm}] (srcConn) at (20.20,0 |- cardUp.east)
+      {OneDrive connector\\[1pt]{\tiny prov:SoftwareAgent}};
+\node[fkpill={applePurple}{4.70cm}] (srcPars) at ($(20.20,0 |- cardLow.east)+(0,1.40)$)
+      {Basenord parser v3\\[1pt]{\tiny prov:SoftwareAgent}};
+\node[fkpill={appleOrange}{4.70cm}] (vocDisc) at (20.20,0 |- cardLow.east)
+      {inst:discipline-architecture\\[1pt]{\tiny ocdi:Discipline}};
+\node[fkpill={appleOrange}{4.70cm}] (vocOwn) at ($(20.20,0 |- cardLow.east)+(0,-1.40)$)
+      {Hines\\[1pt]{\tiny ocdi:Organization}};
+
+\draw[fkarrowc=applePurple] (cardUp.east) -- (srcConn.west)
+  node[fkedgelabelc=applePurple, pos=0.50] {ocdi:hasSource};
+% the three arrows of the lower card all leave the same point on its east edge,
+% so the outer pair reads as one symmetric fan around the horizontal middle one
+\draw[fkarrowc=applePurple] (cardLow.east) -- (srcPars.west)
+  node[fkedgelabelc=applePurple, pos=0.50] {ocdi:hasSource};
+\draw[fkarrowc=appleOrange] (cardLow.east) -- (vocDisc.west)
+  node[fkedgelabelc=appleOrange, pos=0.50] {ocdi:hasDiscipline};
+\draw[fkarrowc=appleOrange] (cardLow.east) -- (vocOwn.west)
+  node[fkedgelabelc=appleOrange, pos=0.50] {ocdi:hasOwner};
+
+\node[fkcaption] at (20.20,1.15)
+      {every claim attributed,\\every value from a controlled vocabulary};
+
+% ===================================================================
+% Background panels (one per column of the story)
+% ===================================================================
+% Fitted around the column contents, so every panel carries the same inner
+% padding (set once in fkpanel). The extra coordinates share the x of the
+% column they belong to and only pin the y: every panel is given the topmost and
+% the bottommost edge of the whole picture (the upper card above, the owner pill
+% below), so the three share one top and one bottom edge.
+\begin{pgfonlayer}{grouping}
+  \node[fkpanel, fit={(cardDoc)
+        (cardDoc.west |- cardUp.north) (cardDoc.west |- srcConn.north)
+        (cardDoc.west |- cardLow.south) (cardDoc.west |- vocOwn.south)}] (panL) {};
+  \node[fkpanel, fit={(cardUp) (cardLow)
+        (cardUp.west |- srcConn.north) (cardUp.west |- vocOwn.south)}] (panM) {};
+  \node[fkpanel, fit={(srcConn) (srcPars) (vocDisc) (vocOwn)
+        (srcConn.west |- cardUp.north) (srcConn.west |- cardLow.south)}] (panR) {};
+\end{pgfonlayer}
+
+\end{tikzpicture}}
