@@ -1,0 +1,79 @@
+%% linattn-chunkwise.tex -- the compromise between the two previous forms: the
+%% scan runs over chunks rather than tokens, and inside a chunk the masked
+%% matrix form runs in parallel.
+%%
+%% The three operands keep the colours of the other two figures, so a chunk
+%% reads as a miniature of the parallel form.
+%%
+%% Requires figkit.sty. Input inside a figure* environment:
+%%   \input{figures/linattn-chunkwise}
+\providecommand{\fkfigwidth}{\linewidth}
+\resizebox{\fkfigwidth}{!}{%
+\begin{tikzpicture}[font=]
+
+% ===================================================================
+% The chunks, each holding its own Q, K and V
+% ===================================================================
+\foreach \name/\x/\s in {ca/3.9/1, cb/9.9/2, cc/17.1/M} {
+  \node[fklabel, font=\small\bfseries] (\name h) at (\x,1.15) {Chunk $\s$};
+  \draw[fkglyph=appleRed]   (\x-0.95,0.05) ellipse (0.17 and 0.52);
+  \draw[fkglyph=appleBlue]  (\x,0.05)      ellipse (0.45 and 0.32);
+  \draw[fkglyph=appleGreen] (\x+0.95,0.05) ellipse (0.17 and 0.52);
+  \node[fklabelc=appleRed, font=\scriptsize]   (\name q) at (\x-0.95,-0.85)
+        {$\mathbf{Q}_{\s}$};
+  \node[fklabelc=appleBlue, font=\scriptsize]  (\name k) at (\x,-0.85)
+        {$\mathbf{K}_{\s}^\top$};
+  \node[fklabelc=appleGreen, font=\scriptsize] (\name v) at (\x+0.95,-0.85)
+        {$\mathbf{V}_{\s}$};
+  \begin{scope}[on background layer]
+    \node[fkcard, inner sep=0.3cm, fit=(\name h)(\name q)(\name k)(\name v)]
+         (\name) {};
+  \end{scope}
+}
+
+% ===================================================================
+% The state handed from one chunk to the next
+% ===================================================================
+\node[fkdot=appleGray, minimum size=1.2cm] (s0) at (0.9,0)  {$\mathbf{S}^{(0)}$};
+\node[fkdot=appleGray, minimum size=1.2cm] (s1) at (6.9,0)  {$\mathbf{S}^{(1)}$};
+\node[fkdot=appleGray, minimum size=1.2cm] (s2) at (12.9,0) {$\mathbf{S}^{(2)}$};
+\node[fklabel, font=\large]                (dots) at (15.0,0) {$\cdots$};
+\node[fkdot=appleGray, minimum size=1.2cm] (sm) at (20.1,0) {$\mathbf{S}^{(M)}$};
+
+\draw[fkarrowc=appleGreen] (s0.east) -- (ca.west);
+\draw[fkarrowc=appleGreen] (ca.east) -- (s1.west);
+\draw[fkarrowc=appleGreen] (s1.east) -- (cb.west);
+\draw[fkarrowc=appleGreen] (cb.east) -- (s2.west);
+\draw[fkarrowc=appleGreen] (s2.east) -- (dots.west);
+\draw[fkarrowc=appleGreen] (dots.east) -- (cc.west);
+\draw[fkarrowc=appleGreen] (cc.east) -- (sm.west);
+
+% ===================================================================
+% What each chunk emits on its own
+% ===================================================================
+\foreach \name/\s in {ca/1, cb/2, cc/M} {
+  \node[fkghost] (\name o) at (\fkcol{\name.south}{-3.0}) {$\mathbf{O}^{(\s)}$};
+  \draw[fkarrowc=appleRed] (\name.south) -- (\name o.north);
+}
+
+% ===================================================================
+% The two terms the chunking splits the output into
+% ===================================================================
+\node[fkformula] (eq) at (8.4,-5.9)
+      {$\mathbf{O}^{(k)} = \underbrace{\phi(\mathbf{Q}^{(k)})\mathbf{S}^{(k-1)}}
+        _{\text{\scriptsize cross-chunk (history)}}
+        \;+\; \underbrace{\bigl(\phi(\mathbf{Q}^{(k)})\phi(\mathbf{K}^{(k)})^\top
+        \odot \mathbf{M}_C\bigr)\mathbf{V}^{(k)}}
+        _{\text{\scriptsize intra-chunk (parallel)}}$\\[10pt]
+       $\mathbf{S}^{(k)} = \mathbf{S}^{(k-1)}
+        + \phi(\mathbf{K}^{(k)})^\top\mathbf{V}^{(k)}$};
+\node[fknote=appleGreen] (cost) at (\fkrow{18.4}{eq.east})
+      {$\mathcal{O}(NC)$ time\\$M = N/C$ sequential steps};
+
+\begin{pgfonlayer}{grouping}
+  \node[fkpanel, inner sep=0.7cm, fit=(s0)(sm)(ca)(cao)(cco)(eq)(cost)] (panel) {};
+\end{pgfonlayer}
+\node[fktitle] at ($(panel.north west)+(0.1,0.15)$)
+      {C. Chunk-wise Parallel Form (SSD-style)};
+
+\end{tikzpicture}}

@@ -49,6 +49,11 @@ Pick colours by role and keep the mapping constant across the figures of one pap
 - `fkprose`: running text inside a card, for an example rather than a property; give it a `text width`.
 - `fkpill={colour}{width}`, `fkpilltype`: a value label and the smaller type line under it.
 - `fkblock={colour}{width}`: a heavier box for a processing step.
+- `fkchip={colour}{size}`, `fkdot={colour}`: a square and a round chip of a fixed size, for a state or a token in a chain.
+- `fkop`: a small circle carrying an operator symbol on a path.
+- `fkghost`: a dashed outline with no fill, for something produced rather than held.
+- `fkformula`, `fknote={colour}`: a white card for a displayed equation, and the coloured callout that states what it costs.
+- `fktitle`: the title of a figure section, set above the panel it names.
 - `fkcaption`: grey gloss set underneath a panel.
 - `fklabel`, `fklabelc={colour}`: free-standing label in the document tone, for something named but not boxed.
 - `fktag={colour}`: small solid chip, for labelling a panel from inside it.
@@ -58,6 +63,7 @@ Pick colours by role and keep the mapping constant across the figures of one pap
 - `fkedgelabel`, `fkedgelabelc={colour}`: a label riding on an arrow, with a white fill so it stays legible where it crosses an edge.
 - `\fkrow{<x>}{<node.anchor>}`, `\fkcol{<node.anchor>}{<y>}`: place a node on the line of another one, so the arrow between them is horizontal or vertical by construction. Declare the node you align to first; a fitted group counts.
 - `\fklit{...}`: a literal value inside a field line.
+- `\fkcutmark[colour]{(x,y)}`: the two slashes that cut an arrow where a gradient is stopped.
 - `\fkfigwidth`: the target width, defaulting to `\linewidth`.
 
 ## Examples
@@ -67,11 +73,14 @@ Pick colours by role and keep the mapping constant across the figures of one pap
 `examples/jina-architecture.tex` reproduces figure 1 of arXiv 2609.03181: icons, curved arrows, a tagged panel and a chain of small blocks.
 `examples/jina-benchmarks.tex` reproduces its figure 2, and is the one plotted figure: two bar panels and two scatter plots.
 
-Build either one on its own with `examples/preview.tex`, which sets a fixed width because `standalone` has no useful `\linewidth`:
+`examples/fixed-point-forcing.tex` shows how to fade what a second panel repeats: put the repeated nodes in a `transparency group` scope with an `opacity`, which keeps overlapping strokes from showing through each other.
+`examples/linattn-{recurrent,parallel,chunkwise}.tex` are three views of the same operator, and the widest exercise of the kit: chips, chained states, dashed outputs, tall matrix operands with a clipped mask, formula cards and cost callouts.
+
+Build any of them with `examples/build.sh`, which generates the `standalone` wrapper in a scratch directory and leaves a PNG in `~/Documents/tmp`:
 
 ```sh
-cd examples && tectonic -Z search-path=.. -c minimal preview.tex
-pdftoppm -png -r 150 -singlefile preview.pdf out
+examples/build.sh linattn-parallel      # one figure
+examples/build.sh all 200               # all of them, at 200 dpi
 ```
 
 ## Plots

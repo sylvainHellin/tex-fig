@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# build.sh <figure|all> [dpi] -- build one example, or every one, and leave a PNG
+# in ~/Documents/tmp, which syncs to the devices a PDF cannot be opened from.
+# The LaTeX wrapper is generated in a scratch directory, so nothing in the repo
+# has to be edited to look at a different figure.
+set -euo pipefail
+
+dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+dpi=${2:-150}
+out=$HOME/Documents/tmp
+
+build_one() {
+  local fig=$1 tmp
+  tmp=$(mktemp -d)
+  cat > "$tmp/$fig.tex" <<EOF
+\\documentclass[border=8pt]{standalone}
+\\usepackage{figkit-plots}
+\\renewcommand{\\fkfigwidth}{20cm}
+\\begin{document}
+\\input{$dir/$fig.tex}
+\\end{document}
+EOF
+  tectonic -Z search-path="$dir/.." -c minimal -o "$tmp" "$tmp/$fig.tex" >/dev/null
+  mkdir -p "$out"
+  pdftoppm -png -r "$dpi" -singlefile "$tmp/$fig.pdf" "$out/$fig"
+  echo "$out/$fig.png"
+}
+
+if [[ ${1:?figure name without .tex, or all} == all ]]; then
+  for f in "$dir"/*.tex; do build_one "$(basename "$f" .tex)"; done
+else
+  build_one "${1%.tex}"
+fi

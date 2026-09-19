@@ -1,0 +1,92 @@
+%% linattn-parallel.tex -- the same linear attention written as masked matrix
+%% products: every query sees every key at once, and the causal mask throws away
+%% the half of the score matrix that would look ahead.
+%%
+%% Each operand keeps its colour from the recurrent figure, and carries its
+%% shape above it, so the chain of products can be read as a shape calculation.
+%%
+%% Requires figkit.sty. Input inside a figure* environment:
+%%   \input{figures/linattn-parallel}
+\providecommand{\fkfigwidth}{\linewidth}
+\resizebox{\fkfigwidth}{!}{%
+\begin{tikzpicture}[font=]
+
+% ===================================================================
+% The operands, each labelled with its shape
+% ===================================================================
+\node[fkblock={appleRed}{1.3cm}, minimum height=3.4cm] (q) at (1.0,0)
+      {$\phi(\mathbf{Q})$};
+\node[fkop] (mul1) at (3.1,0) {$\times$};
+\node[fkblock={appleBlue}{3.4cm}, minimum height=1.5cm] (k) at (6.0,0)
+      {$\phi(\mathbf{K})^\top$};
+\node[fkchip={appleGray}{3.4cm}, fill=white] (m) at (11.6,0) {};
+\node[fkop] (mul2) at (14.2,0) {$\times$};
+\node[fkblock={appleGreen}{1.3cm}, minimum height=3.4cm] (v) at (16.2,0)
+      {$\mathbf{V}$};
+\node[fkblock={appleDark}{1.3cm}, minimum height=3.4cm, fill=white] (o) at (20.6,0)
+      {$\mathbf{O}$};
+
+% the causal mask: the half of the scores that survives, and the half that does not
+\begin{scope}
+  \clip[rounded corners=6pt] (m.south west) rectangle (m.north east);
+  \fill[appleBlue!20] (m.south west) -- (m.north west) -- (m.south east) -- cycle;
+  \foreach \i in {1,...,8}
+    \draw[appleRed!22, line width=0.6pt]
+      ($(m.north west)!\i/9!(m.north east)$)
+      to[out=-70, in=160] ($(m.north east)!\i/9!(m.south east)$);
+\end{scope}
+\node[fklabel, align=center] at (m.center)
+      {$\phi(\mathbf{Q})\phi(\mathbf{K})^\top$\\[-1pt]$\odot\,\mathbf{M}$};
+
+\node[fklabelc=appleRed, font=\scriptsize]   at ($(q.north)+(0,0.32)$) {$N \times d$};
+\node[fklabelc=appleBlue, font=\scriptsize]  at ($(k.north)+(0,0.32)$) {$d \times N$};
+\node[fkcaption]                             at ($(m.north)+(0,0.34)$)
+      {$N \times N$ (causal)};
+\node[fklabelc=appleGreen, font=\scriptsize] at ($(v.north)+(0,0.32)$) {$N \times d_v$};
+\node[fklabel, font=\scriptsize]             at ($(o.north)+(0,0.32)$) {$N \times d_v$};
+
+% ===================================================================
+% The chain of products
+% ===================================================================
+\draw[fkarrowc=appleRed]   (q.east)    -- (mul1.west);
+\draw[fkarrowc=appleBlue]  (k.west)    -- (mul1.east);
+\node[fklabel, font=\large] (eq1) at (9.0,0) {$=$};
+\draw[fkarrow, draw=appleDark] (k.east)   -- (eq1.west);
+\draw[fkarrow, draw=appleDark] (eq1.east) -- (m.west);
+\draw[fkarrow, draw=appleDark] (m.east)   -- (mul2.west);
+\draw[fkarrowc=appleGreen] (v.west) -- (mul2.east);
+\node[fklabel, font=\large] (eq2) at (18.6,0) {$=$};
+\draw[fkarrow, draw=appleDark] (v.east)   -- (eq2.west);
+\draw[fkarrow, draw=appleDark] (eq2.east) -- (o.west);
+
+% ===================================================================
+% What the picture says, and what it costs
+% ===================================================================
+\node[fkformula] (eq) at (7.4,-3.9)
+      {$\mathbf{O} \;=\; \bigl(\phi(\mathbf{Q})\phi(\mathbf{K})^\top \odot \mathbf{M}\bigr)\mathbf{V}$
+       \qquad equivalently \qquad
+       $\mathbf{o}_t \;=\; \sum_{j\le t}\langle\phi(\mathbf{q}_t),\phi(\mathbf{k}_j)\rangle\mathbf{v}_j$};
+\node[fknote=appleRed] (cost) at (\fkrow{18.6}{eq.east})
+      {$\mathcal{O}(N^2)$ time\\fully parallel over $t$};
+
+\begin{pgfonlayer}{grouping}
+  \node[fkpanel, inner sep=0.7cm, fit=(q)(o)(m)(eq)(cost)] (panel) {};
+\end{pgfonlayer}
+\node[fktitle] at ($(panel.north west)+(0.1,0.15)$)
+      {B. Parallel Form (masked attention)};
+
+% ===================================================================
+% The regrouping the chunk-wise form will exploit
+% ===================================================================
+\node[fkcard, minimum size=1.7cm, draw=appleDark, line width=1.2pt] (icon)
+      at (3.4,-7.6) {};
+\foreach \dy in {-0.32,0,0.32}
+  \draw[draw=appleDark, line width=1.2pt, rounded corners=1pt]
+        ($(icon.center)+(-0.42,\dy)$) -- ++(0.84,0);
+\node[fknote=appleGray, anchor=west, align=left] at (\fkrow{5.0}{icon.east})
+      {regroup tokens into $M$ chunks of size $C$, $N = MC$:\\[3pt]
+       $\mathbf{O}^{(k)} = \phi(\mathbf{Q}^{(k)})\mathbf{S}^{(k-1)}
+        \;+\; \bigl(\phi(\mathbf{Q}^{(k)})\phi(\mathbf{K}^{(k)})^\top
+        \odot \mathbf{M}_C\bigr)\mathbf{V}^{(k)}$};
+
+\end{tikzpicture}}

@@ -1,0 +1,71 @@
+%% fixed-point-forcing.tex -- two passes of a self-conditioned denoiser, the
+%% conventional one and the rollout-derived one, side by side.
+%%
+%% Panel (b) repeats panel (a) and fades everything it does not change, so the
+%% eye lands on the loop and the carry it produces. The fading is a transparency
+%% group around the repeated parts, which keeps overlapping strokes from showing
+%% through each other.
+%%
+%% Requires figkit.sty. Input inside a figure* environment:
+%%   \input{figures/fixed-point-forcing}
+\providecommand{\fkfigwidth}{\linewidth}
+\resizebox{\fkfigwidth}{!}{%
+\begin{tikzpicture}[font=]
+
+% ===================================================================
+% (a) conventional self-conditioning
+% ===================================================================
+\node[fklabel, font=\large] (ea) at (0,0) {$\varnothing$};
+\node[fkblock={appleBlue}{1.7cm}, minimum height=1.05cm] (da1) at (2.0,0)
+      {$D_\theta^t$};
+\node[fklabel, font=\large] (sa) at (4.3,0) {$s_t^0$};
+\node[fkblock={appleBlue}{1.7cm}, minimum height=1.05cm] (da2) at (7.4,0)
+      {$D_\theta^t$};
+\node[fklabel, font=\large] (oa) at (9.7,0) {$\hat{x}_1^1$};
+\node[fklabel, font=\large] (xa1) at (2.0,2.1) {$x_t$};
+\node[fklabel, font=\large] (xa2) at (7.4,2.1) {$x_t$};
+\node[fklabelc=appleOrange] (sga) at (5.85,1.0) {Stopgrad};
+
+\draw[fkarrow, draw=appleDark] (ea.east)  -- (da1.west);
+\draw[fkarrow, draw=appleDark] (da1.east) -- (sa.west);
+\draw[fkarrow, draw=appleDark] (sa.east)  -- (da2.west);
+\draw[fkarrow, draw=appleDark] (da2.east) -- (oa.west);
+\draw[fkarrow, draw=appleDark] (xa1.south) -- (da1.north);
+\draw[fkarrow, draw=appleDark] (xa2.south) -- (da2.north);
+\fkcutmark[appleOrange]{(5.85,0)}
+\node[fklabel, font=\normalsize] at (4.85,-1.7) {(a) Conventional self-conditioning};
+
+% ===================================================================
+% (b) fixed-point forcing: the same pass, rolled out k times
+% ===================================================================
+\begin{scope}[xshift=13cm]
+  \begin{scope}[transparency group, opacity=0.33]
+    \node[fklabel, font=\large] (eb) at (0,0) {$\varnothing$};
+    \node[fkblock={appleBlue}{1.7cm}, minimum height=1.05cm] (db2) at (7.4,0)
+          {$D_\theta^t$};
+    \node[fklabel, font=\large] (ob) at (9.7,0) {$\hat{x}_1^{k+1}$};
+    \node[fklabel, font=\large] (xb1) at (2.0,2.1) {$x_t$};
+    \node[fklabel, font=\large] (xb2) at (7.4,2.1) {$x_t$};
+    \node[fklabelc=appleOrange] (sgb) at (5.85,1.0) {Stopgrad};
+    \draw[fkarrow] (eb.east) -- (2.0-0.85,0);
+    \draw[fkarrow] (4.3+0.45,0) -- (db2.west);
+    \draw[fkarrow] (db2.east) -- (ob.west);
+    \draw[fkarrow] (xb1.south) -- (2.0,0.53);
+    \draw[fkarrow] (xb2.south) -- (db2.north);
+    \fkcutmark[appleOrange]{(5.85,0)}
+  \end{scope}
+  \node[fkblock={appleBlue}{1.7cm}, minimum height=1.05cm] (db1) at (2.0,0)
+        {$D_\theta^t$};
+  \node[fklabel, font=\large] (sb) at (4.3,0) {$s_t^k$};
+  \draw[fkarrow, draw=appleDark] (db1.east) -- (sb.west);
+  % the rollout: the carry is fed back k times before the pass that trains
+  \draw[fkarrow, draw=appleDark, fkelbow] (sb.north) -- ++(0,1.05)
+        -| ($(db1.north east)+(-0.4,0)$);
+  \node[fklabel, font=\large\bfseries] at (3.15,2.0) {$\times k$};
+  \node[fklabel, font=\normalsize] at (4.85,-1.7) {(b) Fixed-Point Forcing};
+\end{scope}
+
+\node[fklabel, font=\itshape] at (11.4,-3.1)
+      {Fixed-Point Forcing replaces one-pass carries with rollout-derived carries.};
+
+\end{tikzpicture}}

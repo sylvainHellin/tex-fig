@@ -4,6 +4,8 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{figkit}[2026/09/18 figure kit]
 
+\RequirePackage{amsmath}
+\RequirePackage{amssymb}
 \RequirePackage{xcolor}
 \RequirePackage{tikz}
 \RequirePackage{graphicx}
@@ -48,6 +50,13 @@
 % declared inside a pgfonlayer block is available to everything after it.
 \newcommand{\fkrow}[2]{#1,0 |- #2}
 \newcommand{\fkcol}[2]{0,#2 -| #1}
+
+% The two slashes that cut an arrow where a gradient is stopped.
+%   \fkcutmark[appleOrange]{(5.2,0)}
+\newcommand{\fkcutmark}[2][appleGray]{%
+  \draw[line width=1.5pt, draw=#1]
+    ($#2+(-0.20,-0.24)$) -- ++(0.20,0.48)
+    ($#2+(0.04,-0.24)$)  -- ++(0.20,0.48);}
 
 % A literal value inside a field line.
 \newcommand{\fklit}[1]{\textcolor{appleBlue!55!black}{#1}}
@@ -159,6 +168,71 @@
     draw=#1!85,
     line width=1.1pt},
   fkrule/.style={draw=#1!55, line width=0.7pt},
+  % Square chip of a fixed size, for a state or a step in a chain.
+  fkchip/.style 2 args={
+    rounded corners=6pt,
+    fill=#1!12,
+    draw=#1!70,
+    line width=0.9pt,
+    minimum size=#2,
+    inner sep=3pt,
+    align=center,
+    text=#1!55!black,
+    font=\small},
+  % Round chip, for a vector or a token entering a chain.
+  fkdot/.style={
+    circle,
+    fill=#1!10,
+    draw=#1!80,
+    line width=0.9pt,
+    minimum size=0.85cm,
+    inner sep=1pt,
+    text=#1!55!black,
+    font=\small},
+  % Small circle carrying an operator symbol on a path.
+  fkop/.style={
+    circle,
+    fill=white,
+    draw=appleGray!70,
+    line width=0.8pt,
+    inner sep=1.5pt,
+    text=appleDarkGray,
+    font=\small},
+  % Dashed outline with no fill, for something produced rather than held.
+  fkghost/.style={
+    rounded corners=8pt,
+    fill=white,
+    draw=appleGray!65,
+    line width=0.9pt,
+    dash pattern=on 3pt off 2.5pt,
+    minimum width=1.7cm,
+    minimum height=0.9cm,
+    inner sep=5pt,
+    text=appleDark,
+    font=\small},
+  % White card for a displayed equation, and a coloured callout beside it.
+  fkformula/.style={
+    rounded corners=10pt,
+    fill=white,
+    draw=appleGray!35,
+    line width=0.8pt,
+    inner sep=0.42cm,
+    align=left},
+  fknote/.style={
+    rounded corners=10pt,
+    fill=#1!7,
+    draw=#1!45,
+    line width=0.8pt,
+    inner sep=0.32cm,
+    align=center,
+    text=#1!62!black,
+    font=\small\bfseries},
+  % Title of a figure section, set above the panel it names.
+  fktitle/.style={
+    font=\large\bfseries,
+    text=appleDark,
+    anchor=south west,
+    inner sep=4pt},
   % Grey gloss set underneath a panel or a group.
   fkcaption/.style={
     font=\scriptsize,
