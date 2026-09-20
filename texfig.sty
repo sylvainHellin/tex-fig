@@ -1,8 +1,8 @@
-%% figkit.sty -- colour palette and TikZ node styles for publication figures.
-%% Every style is prefixed fk so nothing collides with a journal class.
+%% texfig.sty -- colour palette and TikZ node styles for publication figures.
+%% Every style is prefixed tf so nothing collides with a journal class.
 %% See README.md for the recipe and a minimal working example.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{figkit}[2026/09/18 figure kit]
+\ProvidesPackage{texfig}[2026/09/18 figure kit]
 
 \RequirePackage{amsmath}
 \RequirePackage{amssymb}
@@ -40,43 +40,43 @@
 \definecolor{appleLightPink}{RGB}{255, 232, 241}
 
 % Target width of a figure; the including document may override it.
-\providecommand{\fkfigwidth}{\linewidth}
+\providecommand{\tffigwidth}{\linewidth}
 
 % Alignment helpers, so an arrow between two nodes can be exactly horizontal or
 % exactly vertical without hand-tuned coordinates.
-%   \node[...] at (\fkrow{23.2}{cardPc.east}) {...};  % x 23.2, y of cardPc.east
-%   \node[...] at (\fkcol{llm.south}{4.1}) {...};     % x of llm.south, y 4.1
+%   \node[...] at (\tfrow{23.2}{cardPc.east}) {...};  % x 23.2, y of cardPc.east
+%   \node[...] at (\tfcol{llm.south}{4.1}) {...};     % x of llm.south, y 4.1
 % Declare the node you align to first; a fitted group counts, since a node
 % declared inside a pgfonlayer block is available to everything after it.
-\newcommand{\fkrow}[2]{#1,0 |- #2}
-\newcommand{\fkcol}[2]{0,#2 -| #1}
+\newcommand{\tfrow}[2]{#1,0 |- #2}
+\newcommand{\tfcol}[2]{0,#2 -| #1}
 
 % The two slashes that cut an arrow where a gradient is stopped.
-%   \fkcutmark[appleOrange]{(5.2,0)}
-\newcommand{\fkcutmark}[2][appleGray]{%
+%   \tfcutmark[appleOrange]{(5.2,0)}
+\newcommand{\tfcutmark}[2][appleGray]{%
   \draw[line width=1.5pt, draw=#1]
     ($#2+(-0.20,-0.24)$) -- ++(0.20,0.48)
     ($#2+(0.04,-0.24)$)  -- ++(0.20,0.48);}
 
 % A literal value inside a field line.
-\newcommand{\fklit}[1]{\textcolor{appleBlue!55!black}{#1}}
+\newcommand{\tflit}[1]{\textcolor{appleBlue!55!black}{#1}}
 % The darkened text tone every accent colour uses for type.
-\newcommand{\fkink}[1]{#1!62!black}
+\newcommand{\tfink}[1]{#1!62!black}
 
 % ------------------------------------------------------------ node styles ----
 \tikzset{
   % Solid light grey panel grouping one column of a picture. Background layer.
-  fkpanel/.style={
+  tfpanel/.style={
     rounded corners=12pt,
     fill=appleLightGray!55,
     draw=appleGray!30,
     line width=0.6pt,
     inner sep=0.40cm},
   % Same panel tinted in an accent colour.
-  fkpanelc/.style={fkpanel, fill=#1!7, draw=#1!30},
+  tfpanelc/.style={tfpanel, fill=#1!7, draw=#1!30},
   % Dashed coloured group box with its title sitting above the frame.
-  % Usage: node[fkgroup={appleGreen}{Inputs}, fit=(a)(b)] {};
-  fkgroup/.style 2 args={
+  % Usage: node[tfgroup={appleGreen}{Inputs}, fit=(a)(b)] {};
+  tfgroup/.style 2 args={
     rounded corners=10pt,
     draw=#1!75,
     fill=#1!4,
@@ -85,42 +85,42 @@
     inner sep=0.32cm,
     label={[font=\small, text=#1!62!black, inner sep=3.5pt]above:#2}},
   % White rounded card, normally used with fit= around its content nodes.
-  fkcard/.style={
+  tfcard/.style={
     rounded corners=8pt,
     fill=white,
     draw=appleGray!45,
     line width=0.7pt,
     inner sep=9pt},
   % Same card tinted in an accent colour.
-  fkcardc/.style={fkcard, fill=#1!8, draw=#1!55},
+  tfcardc/.style={tfcard, fill=#1!8, draw=#1!55},
   % Card header, its accent-coloured variant, and the one-line gloss under it.
-  fkcardtitle/.style={
+  tfcardtitle/.style={
     font=\small\ttfamily,
     text=appleDark,
     anchor=west,
     inner sep=0pt},
-  fkcardtitlec/.style={fkcardtitle, text=#1!62!black},
-  fkcardsubtitle/.style={
+  tfcardtitlec/.style={tfcardtitle, text=#1!62!black},
+  tfcardsubtitle/.style={
     font=\scriptsize\itshape,
     text=appleGray,
     anchor=west,
     inner sep=0pt},
   % One property, value or example line inside a card.
-  fkfield/.style={
+  tffield/.style={
     font=\footnotesize\ttfamily,
     text=appleDarkGray,
     anchor=west,
     inner sep=0pt},
   % Running text inside a card, for an example rather than a property.
-  fkprose/.style={
+  tfprose/.style={
     font=\scriptsize,
     text=appleDarkGray,
     anchor=north west,
     align=left,
     inner sep=0pt},
   % Pill label: 10 percent fill, matching stroke, darkened text.
-  % Usage: node[fkpill={applePurple}{4.7cm}] {Name\\[1pt]{\tiny type}};
-  fkpill/.style 2 args={
+  % Usage: node[tfpill={applePurple}{4.7cm}] {Name\\[1pt]{\tiny type}};
+  tfpill/.style 2 args={
     rounded corners=7pt,
     fill=#1!10,
     draw=#1,
@@ -132,9 +132,9 @@
     text=#1!62!black,
     font=\footnotesize\ttfamily},
   % Secondary line inside a pill: the type of the thing named above.
-  fkpilltype/.style={font=\tiny\ttfamily},
+  tfpilltype/.style={font=\tiny\ttfamily},
   % Solid block for a processing step, heavier than a pill.
-  fkblock/.style 2 args={
+  tfblock/.style 2 args={
     rounded corners=8pt,
     fill=#1!12,
     draw=#1!75,
@@ -147,7 +147,7 @@
     font=\small},
   % Small solid tag, for the name of a component or a phase. Reads as a chip,
   % so it labels a panel from inside it rather than sitting above the frame.
-  fktag/.style={
+  tftag/.style={
     rounded corners=4pt,
     fill=#1!75!black,
     text=white,
@@ -155,7 +155,7 @@
     inner ysep=3.5pt,
     font=\small},
   % Icon canvas: a tinted rounded square to draw a small glyph inside.
-  fkicon/.style={
+  tficon/.style={
     rounded corners=4pt,
     fill=#1!14,
     draw=#1!45,
@@ -163,13 +163,13 @@
     minimum size=1.6cm,
     inner sep=0pt},
   % The strokes of that glyph: an outlined shape and a plain rule.
-  fkglyph/.style={
+  tfglyph/.style={
     rounded corners=1.5pt,
     draw=#1!85,
     line width=1.1pt},
-  fkrule/.style={draw=#1!55, line width=0.7pt},
+  tfrule/.style={draw=#1!55, line width=0.7pt},
   % Square chip of a fixed size, for a state or a step in a chain.
-  fkchip/.style 2 args={
+  tfchip/.style 2 args={
     rounded corners=6pt,
     fill=#1!12,
     draw=#1!70,
@@ -180,7 +180,7 @@
     text=#1!55!black,
     font=\small},
   % Round chip, for a vector or a token entering a chain.
-  fkdot/.style={
+  tfdot/.style={
     circle,
     fill=#1!10,
     draw=#1!80,
@@ -190,7 +190,7 @@
     text=#1!55!black,
     font=\small},
   % Small circle carrying an operator symbol on a path.
-  fkop/.style={
+  tfop/.style={
     circle,
     fill=white,
     draw=appleGray!70,
@@ -199,7 +199,7 @@
     text=appleDarkGray,
     font=\small},
   % Dashed outline with no fill, for something produced rather than held.
-  fkghost/.style={
+  tfghost/.style={
     rounded corners=8pt,
     fill=white,
     draw=appleGray!65,
@@ -211,14 +211,14 @@
     text=appleDark,
     font=\small},
   % White card for a displayed equation, and a coloured callout beside it.
-  fkformula/.style={
+  tfformula/.style={
     rounded corners=10pt,
     fill=white,
     draw=appleGray!35,
     line width=0.8pt,
     inner sep=0.42cm,
     align=left},
-  fknote/.style={
+  tfnote/.style={
     rounded corners=10pt,
     fill=#1!7,
     draw=#1!45,
@@ -228,41 +228,41 @@
     text=#1!62!black,
     font=\small\bfseries},
   % Title of a figure section, set above the panel it names.
-  fktitle/.style={
+  tftitle/.style={
     font=\large\bfseries,
     text=appleDark,
     anchor=south west,
     inner sep=4pt},
   % Grey gloss set underneath a panel or a group.
-  fkcaption/.style={
+  tfcaption/.style={
     font=\scriptsize,
     text=appleGray,
     align=center},
   % Free-standing label in the document tone, for something named but not boxed:
   % the caption of an icon, the input or the output at the end of an arrow.
-  fklabel/.style={
+  tflabel/.style={
     font=\small,
     text=appleDarkGray,
     align=center},
-  fklabelc/.style={fklabel, text=#1!62!black},
-  % Arrows. fkelbow adds the corner radius an orthogonal route needs.
-  fkarrow/.style={
+  tflabelc/.style={tflabel, text=#1!62!black},
+  % Arrows. tfelbow adds the corner radius an orthogonal route needs.
+  tfarrow/.style={
     -{Latex[length=2.6mm,width=1.9mm]},
     line width=0.9pt,
     draw=appleGray!75,
     rounded corners=2pt},
-  fkarrowc/.style={fkarrow, draw=#1},
-  fkarrowdashed/.style={fkarrow, dash pattern=on 3pt off 2.2pt},
-  fkarrowdashedc/.style={fkarrowdashed, draw=#1},
-  fkelbow/.style={rounded corners=7pt},
+  tfarrowc/.style={tfarrow, draw=#1},
+  tfarrowdashed/.style={tfarrow, dash pattern=on 3pt off 2.2pt},
+  tfarrowdashedc/.style={tfarrowdashed, draw=#1},
+  tfelbow/.style={rounded corners=7pt},
   % Label riding on an arrow; the white fill keeps it legible over an edge.
-  fkedgelabel/.style={
+  tfedgelabel/.style={
     font=\scriptsize\ttfamily,
     text=appleDarkGray,
     fill=white,
     inner sep=1.5pt,
     rounded corners=2pt},
-  fkedgelabelc/.style={fkedgelabel, text=#1!62!black},
+  tfedgelabelc/.style={tfedgelabel, text=#1!62!black},
 }
 
 \endinput

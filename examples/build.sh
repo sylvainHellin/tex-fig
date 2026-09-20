@@ -14,8 +14,8 @@ build_one() {
   tmp=$(mktemp -d)
   cat > "$tmp/$fig.tex" <<EOF
 \\documentclass[border=8pt]{standalone}
-\\usepackage{figkit-plots}
-\\renewcommand{\\fkfigwidth}{20cm}
+\\usepackage{texfig-plots}
+\\renewcommand{\\tffigwidth}{20cm}
 \\begin{document}
 \\input{$dir/$fig.tex}
 \\end{document}

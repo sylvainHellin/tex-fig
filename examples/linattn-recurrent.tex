@@ -4,73 +4,73 @@
 %% Colour codes the role: blue for keys, green for values and the write path,
 %% red for the query and the read path, grey for the state itself.
 %%
-%% Requires figkit.sty. Input inside a figure* environment:
+%% Requires texfig.sty. Input inside a figure* environment:
 %%   \input{figures/linattn-recurrent}
-\providecommand{\fkfigwidth}{\linewidth}
-\resizebox{\fkfigwidth}{!}{%
+\providecommand{\tffigwidth}{\linewidth}
+\resizebox{\tffigwidth}{!}{%
 \begin{tikzpicture}[font=]
 
 % ===================================================================
 % The chain of states, and what writes into each of them
 % ===================================================================
-\node[fkchip={appleGray}{1.5cm}] (s0) at (1.6,4.2) {$\mathbf{S}_0$};
-\node[fkchip={appleGray}{1.5cm}] (s1) at (4.6,4.2) {$\mathbf{S}_1$};
-\node[fkchip={appleGray}{1.5cm}] (s2) at (7.6,4.2) {$\mathbf{S}_2$};
-\node[fklabel, font=\large] (dots) at (9.8,4.2) {$\cdots$};
-\node[fkchip={appleGray}{1.5cm}] (st) at (12.2,4.2) {$\mathbf{S}_t$};
+\node[tfchip={appleGray}{1.5cm}] (s0) at (1.6,4.2) {$\mathbf{S}_0$};
+\node[tfchip={appleGray}{1.5cm}] (s1) at (4.6,4.2) {$\mathbf{S}_1$};
+\node[tfchip={appleGray}{1.5cm}] (s2) at (7.6,4.2) {$\mathbf{S}_2$};
+\node[tflabel, font=\large] (dots) at (9.8,4.2) {$\cdots$};
+\node[tfchip={appleGray}{1.5cm}] (st) at (12.2,4.2) {$\mathbf{S}_t$};
 
 \foreach \s/\i in {s1/1, s2/2, st/t} {
-  \node[fkdot=appleBlue]  (k\i) at ($(\s.north)+(-0.6,2.0)$) {$\mathbf{k}_{\i}$};
-  \node[fkdot=appleGreen] (v\i) at ($(\s.north)+(0.6,2.0)$)  {$\mathbf{v}_{\i}$};
-  \draw[fkarrowc=appleGreen] (k\i.south) -- ($(\s.north)+(-0.12,0)$);
-  \draw[fkarrowc=appleGreen] (v\i.south) -- ($(\s.north)+(0.12,0)$);
+  \node[tfdot=appleBlue]  (k\i) at ($(\s.north)+(-0.6,2.0)$) {$\mathbf{k}_{\i}$};
+  \node[tfdot=appleGreen] (v\i) at ($(\s.north)+(0.6,2.0)$)  {$\mathbf{v}_{\i}$};
+  \draw[tfarrowc=appleGreen] (k\i.south) -- ($(\s.north)+(-0.12,0)$);
+  \draw[tfarrowc=appleGreen] (v\i.south) -- ($(\s.north)+(0.12,0)$);
 }
 
-\draw[fkarrow, draw=appleDark] (s0.east) -- (s1.west);
-\draw[fkarrow, draw=appleDark] (s1.east) -- (s2.west);
-\draw[fkarrow, draw=appleDark] (s2.east) -- (dots.west);
-\draw[fkarrow, draw=appleDark] (dots.east) -- (st.west);
+\draw[tfarrow, draw=appleDark] (s0.east) -- (s1.west);
+\draw[tfarrow, draw=appleDark] (s1.east) -- (s2.west);
+\draw[tfarrow, draw=appleDark] (s2.east) -- (dots.west);
+\draw[tfarrow, draw=appleDark] (dots.east) -- (st.west);
 
 % ===================================================================
 % The query reads the state out
 % ===================================================================
-\node[fkdot=appleRed] (qt) at (\fkcol{st.south}{1.9}) {$\mathbf{q}_t$};
-\node[fkghost] (ot) at (\fkrow{15.0}{st.east}) {$\mathbf{o}_t$};
-\draw[fkarrowc=appleRed] (qt.north) -- (st.south);
-\draw[fkarrowc=appleRed] (st.east)  -- (ot.west);
+\node[tfdot=appleRed] (qt) at (\tfcol{st.south}{1.9}) {$\mathbf{q}_t$};
+\node[tfghost] (ot) at (\tfrow{15.0}{st.east}) {$\mathbf{o}_t$};
+\draw[tfarrowc=appleRed] (qt.north) -- (st.south);
+\draw[tfarrowc=appleRed] (st.east)  -- (ot.west);
 
-\node[fklabelc=appleGreen, font=\small\bfseries, anchor=west] (wlab)
+\node[tflabelc=appleGreen, font=\small\bfseries, anchor=west] (wlab)
       at (0.9,2.9) {write $\phi(\mathbf{k}_s)\mathbf{v}_s^\top$};
-\node[fklabelc=appleRed, font=\small\bfseries, anchor=south] (rlab)
+\node[tflabelc=appleRed, font=\small\bfseries, anchor=south] (rlab)
       at ($(ot.north)+(0,0.25)$) {read $\mathbf{S}_t^\top\phi(\mathbf{q}_t)$};
 
 % ===================================================================
 % What the picture says, in symbols and in cost
 % ===================================================================
-\node[fkformula] (eq) at (6.4,-0.1)
+\node[tfformula] (eq) at (6.4,-0.1)
       {$\mathbf{S}_t = \mathbf{S}_{t-1} + \phi(\mathbf{k}_t)\mathbf{v}_t^\top$\\[4pt]
        $\mathbf{o}_t = \mathbf{S}_t^\top\phi(\mathbf{q}_t)$};
-\node[fknote=appleBlue] (cost) at (\fkrow{11.4}{eq.east})
+\node[tfnote=appleBlue] (cost) at (\tfrow{11.4}{eq.east})
       {$\mathcal{O}(N)$ time\\$\mathcal{O}(1)$ state at inference};
-\node[fkcaption, font=\small\bfseries, anchor=west] (time) at (0.6,7.0)
+\node[tfcaption, font=\small\bfseries, anchor=west] (time) at (0.6,7.0)
       {time $\rightarrow$};
 
 \begin{pgfonlayer}{grouping}
-  \node[fkpanel, inner sep=0.6cm, fit=(time)(s0)(k1)(v1)(qt)(ot)(rlab)(wlab)(eq)(cost)]
+  \node[tfpanel, inner sep=0.6cm, fit=(time)(s0)(k1)(v1)(qt)(ot)(rlab)(wlab)(eq)(cost)]
        (panel) {};
 \end{pgfonlayer}
-\node[fktitle] at ($(panel.north west)+(0.1,0.15)$)
+\node[tftitle] at ($(panel.north west)+(0.1,0.15)$)
       {A. Recurrent Form (causal scan)};
 
 % ===================================================================
 % The identity the recurrence hides
 % ===================================================================
-\node[fkcard, minimum size=1.7cm, draw=appleDark, line width=1.2pt] (icon)
+\node[tfcard, minimum size=1.7cm, draw=appleDark, line width=1.2pt] (icon)
       at (2.8,-2.6) {};
 \foreach \dy in {-0.32,0,0.32}
   \draw[draw=appleDark, line width=1.2pt, rounded corners=1pt]
         ($(icon.center)+(-0.42,\dy)$) -- ++(0.84,0);
-\node[fknote=appleGray, anchor=west, align=left] at (\fkrow{4.4}{icon.east})
+\node[tfnote=appleGray, anchor=west, align=left] at (\tfrow{4.4}{icon.east})
       {exact equality for $\mathbf{S}_0 = 0$:\quad
        $\mathbf{S}_t = \sum_{j\le t}\phi(\mathbf{k}_j)\mathbf{v}_j^\top
         \;\Longrightarrow\;
