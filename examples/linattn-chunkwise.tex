@@ -32,13 +32,14 @@
 }
 
 % ===================================================================
-% The state handed from one chunk to the next
+% The state handed from one chunk to the next, pinned to the line of the
+% chunk cards so every arrow along the scan is horizontal
 % ===================================================================
-\node[fkdot=appleGray, minimum size=1.2cm] (s0) at (0.9,0)  {$\mathbf{S}^{(0)}$};
-\node[fkdot=appleGray, minimum size=1.2cm] (s1) at (6.9,0)  {$\mathbf{S}^{(1)}$};
-\node[fkdot=appleGray, minimum size=1.2cm] (s2) at (12.9,0) {$\mathbf{S}^{(2)}$};
-\node[fklabel, font=\large]                (dots) at (15.0,0) {$\cdots$};
-\node[fkdot=appleGray, minimum size=1.2cm] (sm) at (20.1,0) {$\mathbf{S}^{(M)}$};
+\node[fkdot=appleGray, minimum size=1.2cm] (s0) at (\fkrow{0.9}{ca.west})  {$\mathbf{S}^{(0)}$};
+\node[fkdot=appleGray, minimum size=1.2cm] (s1) at (\fkrow{6.9}{ca.west})  {$\mathbf{S}^{(1)}$};
+\node[fkdot=appleGray, minimum size=1.2cm] (s2) at (\fkrow{12.9}{ca.west}) {$\mathbf{S}^{(2)}$};
+\node[fklabel, font=\large]                (dots) at (\fkrow{15.0}{ca.west}) {$\cdots$};
+\node[fkdot=appleGray, minimum size=1.2cm] (sm) at (\fkrow{20.1}{ca.west}) {$\mathbf{S}^{(M)}$};
 
 \draw[fkarrowc=appleGreen] (s0.east) -- (ca.west);
 \draw[fkarrowc=appleGreen] (ca.east) -- (s1.west);
