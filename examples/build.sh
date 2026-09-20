@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-# build.sh <figure|all> [dpi] -- build one example, or every one, and leave a PNG
-# in ~/Documents/tmp, which syncs to the devices a PDF cannot be opened from.
+# build.sh <figure|path.tex|all> [dpi] -- build one figure, or every example, and
+# leave a PNG in ~/Documents/tmp, which syncs to the devices a PDF cannot be
+# opened from. A bare name is looked up in examples/; a path builds a figure that
+# lives anywhere, which is how a figure inside a paper repo is previewed.
 # The LaTeX wrapper is generated in a scratch directory, so nothing in the repo
 # has to be edited to look at a different figure.
 #
@@ -16,7 +18,12 @@ palette=${PALETTE:-apple}
 font=${FONT:-times}
 
 build_one() {
-  local fig=$1 name=$1 tmp
+  local src=$1 fig name tmp
+  [[ $src == *.tex || $src == */* ]] || src=$dir/$src.tex
+  [[ -e $src ]] || { echo "no such figure: $src" >&2; exit 1; }
+  src=$(cd "$(dirname "$src")" && pwd)/$(basename "$src")
+  fig=$(basename "$src" .tex)
+  name=$fig
   [[ $palette == apple ]] || name=$fig-$palette
   tmp=$(mktemp -d)
   cat > "$tmp/$name.tex" <<EOF
@@ -24,7 +31,7 @@ build_one() {
 \\usepackage[palette=$palette, font=$font]{texfig-plots}
 \\renewcommand{\\tffigwidth}{20cm}
 \\begin{document}
-\\input{$dir/$fig.tex}
+\\input{$src}
 \\end{document}
 EOF
   tectonic -Z search-path="$dir/.." -c minimal -o "$tmp" "$tmp/$name.tex" >/dev/null
@@ -33,8 +40,8 @@ EOF
   echo "$out/$name.png"
 }
 
-if [[ ${1:?figure name without .tex, or all} == all ]]; then
-  for f in "$dir"/*.tex; do build_one "$(basename "$f" .tex)"; done
+if [[ ${1:?figure name, path to a .tex, or all} == all ]]; then
+  for f in "$dir"/*.tex; do build_one "$f"; done
 else
-  build_one "${1%.tex}"
+  build_one "$1"
 fi
