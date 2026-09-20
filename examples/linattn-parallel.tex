@@ -14,50 +14,50 @@
 % ===================================================================
 % The operands, each labelled with its shape
 % ===================================================================
-\node[tfblock={appleRed}{1.3cm}, minimum height=3.4cm] (q) at (1.0,0)
+\node[tfblock={tfRed}{1.3cm}, minimum height=3.4cm] (q) at (1.0,0)
       {$\phi(\mathbf{Q})$};
 \node[tfop] (mul1) at (3.1,0) {$\times$};
-\node[tfblock={appleBlue}{3.4cm}, minimum height=1.5cm] (k) at (6.0,0)
+\node[tfblock={tfBlue}{3.4cm}, minimum height=1.5cm] (k) at (6.0,0)
       {$\phi(\mathbf{K})^\top$};
-\node[tfchip={appleGray}{3.4cm}, fill=white] (m) at (11.6,0) {};
+\node[tfchip={tfGray}{3.4cm}, fill=white] (m) at (11.6,0) {};
 \node[tfop] (mul2) at (14.2,0) {$\times$};
-\node[tfblock={appleGreen}{1.3cm}, minimum height=3.4cm] (v) at (16.2,0)
+\node[tfblock={tfGreen}{1.3cm}, minimum height=3.4cm] (v) at (16.2,0)
       {$\mathbf{V}$};
-\node[tfblock={appleDark}{1.3cm}, minimum height=3.4cm, fill=white] (o) at (20.6,0)
+\node[tfblock={tfDark}{1.3cm}, minimum height=3.4cm, fill=white] (o) at (20.6,0)
       {$\mathbf{O}$};
 
 % the causal mask: the half of the scores that survives, and the half that does not
 \begin{scope}
   \clip[rounded corners=6pt] (m.south west) rectangle (m.north east);
-  \fill[appleBlue!20] (m.south west) -- (m.north west) -- (m.south east) -- cycle;
+  \fill[tfBlue!20] (m.south west) -- (m.north west) -- (m.south east) -- cycle;
   \foreach \i in {1,...,8}
-    \draw[appleRed!22, line width=0.6pt]
+    \draw[tfRed!22, line width=0.6pt]
       ($(m.north west)!\i/9!(m.north east)$)
       to[out=-70, in=160] ($(m.north east)!\i/9!(m.south east)$);
 \end{scope}
 \node[tflabel, align=center] at (m.center)
       {$\phi(\mathbf{Q})\phi(\mathbf{K})^\top$\\[-1pt]$\odot\,\mathbf{M}$};
 
-\node[tflabelc=appleRed, font=\scriptsize]   at ($(q.north)+(0,0.32)$) {$N \times d$};
-\node[tflabelc=appleBlue, font=\scriptsize]  at ($(k.north)+(0,0.32)$) {$d \times N$};
+\node[tflabelc=tfRed, font=\scriptsize]   at ($(q.north)+(0,0.32)$) {$N \times d$};
+\node[tflabelc=tfBlue, font=\scriptsize]  at ($(k.north)+(0,0.32)$) {$d \times N$};
 \node[tfcaption]                             at ($(m.north)+(0,0.34)$)
       {$N \times N$ (causal)};
-\node[tflabelc=appleGreen, font=\scriptsize] at ($(v.north)+(0,0.32)$) {$N \times d_v$};
+\node[tflabelc=tfGreen, font=\scriptsize] at ($(v.north)+(0,0.32)$) {$N \times d_v$};
 \node[tflabel, font=\scriptsize]             at ($(o.north)+(0,0.32)$) {$N \times d_v$};
 
 % ===================================================================
 % The chain of products
 % ===================================================================
-\draw[tfarrowc=appleRed]   (q.east)    -- (mul1.west);
-\draw[tfarrowc=appleBlue]  (k.west)    -- (mul1.east);
+\draw[tfarrowc=tfRed]   (q.east)    -- (mul1.west);
+\draw[tfarrowc=tfBlue]  (k.west)    -- (mul1.east);
 \node[tflabel, font=\large] (eq1) at (9.0,0) {$=$};
-\draw[tfarrow, draw=appleDark] (k.east)   -- (eq1.west);
-\draw[tfarrow, draw=appleDark] (eq1.east) -- (m.west);
-\draw[tfarrow, draw=appleDark] (m.east)   -- (mul2.west);
-\draw[tfarrowc=appleGreen] (v.west) -- (mul2.east);
+\draw[tfarrow, draw=tfDark] (k.east)   -- (eq1.west);
+\draw[tfarrow, draw=tfDark] (eq1.east) -- (m.west);
+\draw[tfarrow, draw=tfDark] (m.east)   -- (mul2.west);
+\draw[tfarrowc=tfGreen] (v.west) -- (mul2.east);
 \node[tflabel, font=\large] (eq2) at (18.6,0) {$=$};
-\draw[tfarrow, draw=appleDark] (v.east)   -- (eq2.west);
-\draw[tfarrow, draw=appleDark] (eq2.east) -- (o.west);
+\draw[tfarrow, draw=tfDark] (v.east)   -- (eq2.west);
+\draw[tfarrow, draw=tfDark] (eq2.east) -- (o.west);
 
 % ===================================================================
 % What the picture says, and what it costs
@@ -66,7 +66,7 @@
       {$\mathbf{O} \;=\; \bigl(\phi(\mathbf{Q})\phi(\mathbf{K})^\top \odot \mathbf{M}\bigr)\mathbf{V}$
        \qquad equivalently \qquad
        $\mathbf{o}_t \;=\; \sum_{j\le t}\langle\phi(\mathbf{q}_t),\phi(\mathbf{k}_j)\rangle\mathbf{v}_j$};
-\node[tfnote=appleRed] (cost) at (\tfrow{18.6}{eq.east})
+\node[tfnote=tfRed] (cost) at (\tfrow{18.6}{eq.east})
       {$\mathcal{O}(N^2)$ time\\fully parallel over $t$};
 
 \begin{pgfonlayer}{grouping}
@@ -78,12 +78,12 @@
 % ===================================================================
 % The regrouping the chunk-wise form will exploit
 % ===================================================================
-\node[tfcard, minimum size=1.7cm, draw=appleDark, line width=1.2pt] (icon)
+\node[tfcard, minimum size=1.7cm, draw=tfDark, line width=1.2pt] (icon)
       at (3.4,-7.6) {};
 \foreach \dy in {-0.32,0,0.32}
-  \draw[draw=appleDark, line width=1.2pt, rounded corners=1pt]
+  \draw[draw=tfDark, line width=1.2pt, rounded corners=1pt]
         ($(icon.center)+(-0.42,\dy)$) -- ++(0.84,0);
-\node[tfnote=appleGray, anchor=west, align=left] at (\tfrow{5.0}{icon.east})
+\node[tfnote=tfGray, anchor=west, align=left] at (\tfrow{5.0}{icon.east})
       {regroup tokens into $M$ chunks of size $C$, $N = MC$:\\[3pt]
        $\mathbf{O}^{(k)} = \phi(\mathbf{Q}^{(k)})\mathbf{S}^{(k-1)}
         \;+\; \bigl(\phi(\mathbf{Q}^{(k)})\phi(\mathbf{K}^{(k)})^\top

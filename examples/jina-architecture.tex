@@ -15,27 +15,27 @@
 % ===================================================================
 % The document page and the tiles it is cut into
 % ===================================================================
-\node[tficon=appleBlue, minimum width=2.2cm, minimum height=3.1cm] (page) at (0,0) {};
-\draw[tfglyph=appleBlue] ($(page.north west)+(0.25,-0.30)$) rectangle ++(0.65,-0.55);
-\draw[tfrule=appleBlue]  ($(page.north west)+(1.05,-0.42)$) -- ++(0.88,0);
-\draw[tfrule=appleBlue]  ($(page.north west)+(1.05,-0.72)$) -- ++(0.88,0);
-\draw[tfrule=appleBlue]  ($(page.north west)+(0.25,-1.28)$) -- ++(1.68,0);
-\draw[tfrule=appleBlue]  ($(page.north west)+(0.25,-1.62)$) -- ++(1.68,0);
-\draw[tfglyph=appleBlue] ($(page.south east)+(-0.95,0.90)$) rectangle ++(0.62,-0.55);
+\node[tficon=tfBlue, minimum width=2.2cm, minimum height=3.1cm] (page) at (0,0) {};
+\draw[tfglyph=tfBlue] ($(page.north west)+(0.25,-0.30)$) rectangle ++(0.65,-0.55);
+\draw[tfrule=tfBlue]  ($(page.north west)+(1.05,-0.42)$) -- ++(0.88,0);
+\draw[tfrule=tfBlue]  ($(page.north west)+(1.05,-0.72)$) -- ++(0.88,0);
+\draw[tfrule=tfBlue]  ($(page.north west)+(0.25,-1.28)$) -- ++(1.68,0);
+\draw[tfrule=tfBlue]  ($(page.north west)+(0.25,-1.62)$) -- ++(1.68,0);
+\draw[tfglyph=tfBlue] ($(page.south east)+(-0.95,0.90)$) rectangle ++(0.62,-0.55);
 \node[tflabel, below=6pt of page] {document page};
 
-\node[tficon=appleBlue, minimum size=1.35cm] (tiles) at (3.4,3.4) {};
+\node[tficon=tfBlue, minimum size=1.35cm] (tiles) at (3.4,3.4) {};
 \foreach \dx/\dy in {-0.24/0.24, 0.24/0.24, -0.24/-0.24, 0.24/-0.24}
-  \fill[appleBlue!45, rounded corners=1pt]
+  \fill[tfBlue!45, rounded corners=1pt]
         ($(tiles.center)+(\dx-0.19,\dy-0.19)$) rectangle ++(0.38,0.38);
 \node[tflabel, above=6pt of tiles] {$n$ local tiles};
 
 % ===================================================================
 % The two model stages, on the line of the page
 % ===================================================================
-\node[tfblock={appleBlue}{5.0cm}, minimum height=2.6cm] (enc) at (\tfrow{7.6}{page.east})
+\node[tfblock={tfBlue}{5.0cm}, minimum height=2.6cm] (enc) at (\tfrow{7.6}{page.east})
       {\textbf{DeepEncoder}\\[2pt]vision encoder};
-\node[tfblock={appleBlue}{5.6cm}, minimum height=2.6cm] (dec) at (\tfrow{15.4}{page.east})
+\node[tfblock={tfBlue}{5.6cm}, minimum height=2.6cm] (dec) at (\tfrow{15.4}{page.east})
       {\textbf{MoE decoder}\\[2pt]3B total $\cdot$ 570M active};
 \node[tflabel, anchor=west] (md) at (\tfrow{19.1}{page.east}) {Markdown};
 \node[tflabel, font=\small\itshape] (instr) at (\tfcol{dec.north}{3.4}) {user instruction};
@@ -43,21 +43,21 @@
 % ===================================================================
 % The speculative decoding block
 % ===================================================================
-\node[tfblock={appleOrange}{4.6cm}, minimum height=1.1cm] (draft) at (11.6,-6.4)
+\node[tfblock={tfOrange}{4.6cm}, minimum height=1.1cm] (draft) at (11.6,-6.4)
       {\textbf{shared draft block}};
-\node[tfblock={appleOrange}{1.3cm}, minimum height=1.1cm] (d1)
+\node[tfblock={tfOrange}{1.3cm}, minimum height=1.1cm] (d1)
       at (\tfrow{15.0}{draft.east}) {$\hat{x}_{t+1}$};
-\node[tfblock={appleOrange}{1.3cm}, minimum height=1.1cm] (d2)
+\node[tfblock={tfOrange}{1.3cm}, minimum height=1.1cm] (d2)
       at (\tfrow{16.8}{draft.east}) {$\hat{x}_{t+2}$};
-\node[tfblock={appleOrange}{1.3cm}, minimum height=1.1cm] (d3)
+\node[tfblock={tfOrange}{1.3cm}, minimum height=1.1cm] (d3)
       at (\tfrow{18.6}{draft.east}) {$\hat{x}_{t+3}$};
 \node[tflabel, anchor=west] (verify) at (\tfrow{19.6}{draft.east}) {verify};
-\node[tftag=appleOrange, anchor=west] (tag) at (9.6,-5.0) {FastMTP};
-\node[tflabelc=appleOrange, anchor=east] (drafts)
+\node[tftag=tfOrange, anchor=west] (tag) at (9.6,-5.0) {FastMTP};
+\node[tflabelc=tfOrange, anchor=east] (drafts)
       at (\tfrow{20.3}{tag.east}) {$K{=}3$ drafts};
 
 \begin{pgfonlayer}{grouping}
-  \node[tfpanelc=appleOrange, inner sep=0.45cm,
+  \node[tfpanelc=tfOrange, inner sep=0.45cm,
         fit=(tag)(drafts)(draft)(verify)] (mtp) {};
 \end{pgfonlayer}
 
@@ -70,18 +70,18 @@
 \draw[tfarrow] (page.east) -- (enc.west);
 % the visual tokens reach the decoder, which emits Markdown
 \draw[tfarrow] (enc.east) -- (dec.west)
-      node[tfedgelabel, font=\small, text=appleDarkGray, pos=0.5, above=1pt,
+      node[tfedgelabel, font=\small, text=tfDarkGray, pos=0.5, above=1pt,
            align=center] {$256 + 100n$\\tokens};
 \draw[tfarrow] (dec.east) -- (md.west);
 \draw[tfarrow] (instr.south) -- (dec.north);
 % and its hidden state drives the draft head
 \draw[tfarrowdashed] (dec.south) -- (dec.south |- mtp.north)
-      node[tfedgelabel, font=\small, text=appleDarkGray, pos=0.55, right=2pt]
+      node[tfedgelabel, font=\small, text=tfDarkGray, pos=0.55, right=2pt]
       {hidden state};
 % the draft block proposes K tokens, verified in one pass
-\draw[tfarrowc=appleOrange!75!black] (draft.east) -- (d1.west);
-\draw[tfarrowc=appleOrange!75!black] (d1.east) -- (d2.west);
-\draw[tfarrowc=appleOrange!75!black] (d2.east) -- (d3.west);
-\draw[tfarrowc=appleOrange!75!black] (d3.east) -- (verify.west);
+\draw[tfarrowc=tfOrange!75!black] (draft.east) -- (d1.west);
+\draw[tfarrowc=tfOrange!75!black] (d1.east) -- (d2.west);
+\draw[tfarrowc=tfOrange!75!black] (d2.east) -- (d3.west);
+\draw[tfarrowc=tfOrange!75!black] (d3.east) -- (verify.west);
 
 \end{tikzpicture}}

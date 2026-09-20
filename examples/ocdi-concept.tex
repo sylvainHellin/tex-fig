@@ -21,7 +21,7 @@
 % height is set by the tallest column (the pills on the right). Its x is set so
 % that the gap to the middle panel matches the one between the middle and the
 % right panel, which the four edge labels there fix at 96.285pt.
-\node[tfcardtitle, text=appleBlue!60!black] (dTitle) at (-1.8019,7.666)
+\node[tfcardtitle, text=tfBlue!60!black] (dTitle) at (-1.8019,7.666)
       {ocdi:Document};
 \node[tfcardsubtitle]  (dSub)  at (-1.8019,7.266) {identified by the hash of its bytes};
 \node[tffield] (dF1) at (-1.8019,6.716) {ocdi:hasHash \tflit{"sha256:9f86d0..."}};
@@ -38,7 +38,7 @@
 % MIDDLE: two claim sets about that document
 % ===================================================================
 % --- upper card: the connector's claims ---------------------------
-\node[tfcardtitle, text=appleGreen!42!black] (uTitle) at (8.30,10.80)
+\node[tfcardtitle, text=tfGreen!42!black] (uTitle) at (8.30,10.80)
       {ocdi:Metadata};
 \node[tfcardsubtitle] (uSub) at (8.30,10.40) {what the connector found};
 \node[tffield] (uF1) at (8.30,9.85) {ocdi:hasFilePath};
@@ -53,7 +53,7 @@
 \end{scope}
 
 % --- lower card: the parser's claims ------------------------------
-\node[tfcardtitle, text=appleGreen!42!black] (lTitle) at (8.30,4.90)
+\node[tfcardtitle, text=tfGreen!42!black] (lTitle) at (8.30,4.90)
       {ocdi:Metadata};
 \node[tfcardsubtitle] (lSub) at (8.30,4.50) {what the parser extracted};
 \node[tffield] (lF1) at (8.30,3.95) {ocdi:hasDiscipline};
@@ -87,25 +87,25 @@
 % the middle of the lower card, so both those arrows run exactly horizontal. The
 % parser and the owner sit 1.40cm above and below the discipline, so their two
 % arrows leave the lower card at mirrored angles.
-\node[tfpill={applePurple}{4.70cm}] (srcConn) at (20.20,0 |- cardUp.east)
+\node[tfpill={tfPurple}{4.70cm}] (srcConn) at (20.20,0 |- cardUp.east)
       {OneDrive connector\\[1pt]{\tiny prov:SoftwareAgent}};
-\node[tfpill={applePurple}{4.70cm}] (srcPars) at ($(20.20,0 |- cardLow.east)+(0,1.40)$)
+\node[tfpill={tfPurple}{4.70cm}] (srcPars) at ($(20.20,0 |- cardLow.east)+(0,1.40)$)
       {Basenord parser v3\\[1pt]{\tiny prov:SoftwareAgent}};
-\node[tfpill={appleOrange}{4.70cm}] (vocDisc) at (20.20,0 |- cardLow.east)
+\node[tfpill={tfOrange}{4.70cm}] (vocDisc) at (20.20,0 |- cardLow.east)
       {inst:discipline-architecture\\[1pt]{\tiny ocdi:Discipline}};
-\node[tfpill={appleOrange}{4.70cm}] (vocOwn) at ($(20.20,0 |- cardLow.east)+(0,-1.40)$)
+\node[tfpill={tfOrange}{4.70cm}] (vocOwn) at ($(20.20,0 |- cardLow.east)+(0,-1.40)$)
       {Hines\\[1pt]{\tiny ocdi:Organization}};
 
-\draw[tfarrowc=applePurple] (cardUp.east) -- (srcConn.west)
-  node[tfedgelabelc=applePurple, pos=0.50] {ocdi:hasSource};
+\draw[tfarrowc=tfPurple] (cardUp.east) -- (srcConn.west)
+  node[tfedgelabelc=tfPurple, pos=0.50] {ocdi:hasSource};
 % the three arrows of the lower card all leave the same point on its east edge,
 % so the outer pair reads as one symmetric fan around the horizontal middle one
-\draw[tfarrowc=applePurple] (cardLow.east) -- (srcPars.west)
-  node[tfedgelabelc=applePurple, pos=0.50] {ocdi:hasSource};
-\draw[tfarrowc=appleOrange] (cardLow.east) -- (vocDisc.west)
-  node[tfedgelabelc=appleOrange, pos=0.50] {ocdi:hasDiscipline};
-\draw[tfarrowc=appleOrange] (cardLow.east) -- (vocOwn.west)
-  node[tfedgelabelc=appleOrange, pos=0.50] {ocdi:hasOwner};
+\draw[tfarrowc=tfPurple] (cardLow.east) -- (srcPars.west)
+  node[tfedgelabelc=tfPurple, pos=0.50] {ocdi:hasSource};
+\draw[tfarrowc=tfOrange] (cardLow.east) -- (vocDisc.west)
+  node[tfedgelabelc=tfOrange, pos=0.50] {ocdi:hasDiscipline};
+\draw[tfarrowc=tfOrange] (cardLow.east) -- (vocOwn.west)
+  node[tfedgelabelc=tfOrange, pos=0.50] {ocdi:hasOwner};
 
 \node[tfcaption] at (20.20,1.15)
       {every claim attributed,\\every value from a controlled vocabulary};

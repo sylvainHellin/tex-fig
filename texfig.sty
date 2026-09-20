@@ -4,6 +4,18 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{texfig}[2026/09/18 figure kit]
 
+% ---------------------------------------------------------------- options ----
+%   palette = apple (default) | tum | hines   which brand the hues come from
+%   font    = inherit (default) | times | helvet | palatino | libertine
+% The font option exists for standalone previews, where the document class sets
+% no font and a render would come out in Computer Modern instead of the face the
+% paper prints in. Inside a real document, leave it at inherit.
+\RequirePackage{kvoptions}
+\SetupKeyvalOptions{family=texfig, prefix=texfig@}
+\DeclareStringOption[apple]{palette}
+\DeclareStringOption[inherit]{font}
+\ProcessKeyvalOptions*
+
 \RequirePackage{amsmath}
 \RequirePackage{amssymb}
 \RequirePackage{xcolor}
@@ -18,26 +30,102 @@
 \pgfdeclarelayer{grouping}
 \pgfsetlayers{grouping,background,main}
 
-% ---------------------------------------------------------------- palette ----
-% Apple system colours: saturated accent plus a near-white tint of each.
-\definecolor{appleBlue}{RGB}{0, 122, 255}
-\definecolor{appleLightBlue}{RGB}{235, 245, 255}
-\definecolor{appleRed}{RGB}{255, 59, 48}
-\definecolor{appleLightRed}{RGB}{255, 235, 235}
-\definecolor{appleGreen}{RGB}{52, 199, 89}
-\definecolor{appleLightGreen}{RGB}{235, 255, 235}
-\definecolor{appleGray}{RGB}{142, 142, 147}
-\definecolor{appleLightGray}{RGB}{242, 242, 247}
-\definecolor{appleDarkGray}{RGB}{44, 44, 46}
-\definecolor{appleDark}{RGB}{28, 28, 30}
-\definecolor{applePurple}{RGB}{175, 82, 222}
-\definecolor{appleLightPurple}{RGB}{243, 233, 255}
-\definecolor{appleOrange}{RGB}{255, 149, 0}
-\definecolor{appleLightOrange}{RGB}{255, 235, 205}
-\definecolor{appleTeal}{RGB}{48, 176, 199}
-\definecolor{appleLightTeal}{RGB}{213, 240, 245}
-\definecolor{applePink}{RGB}{255, 45, 133}
-\definecolor{appleLightPink}{RGB}{255, 232, 241}
+% --------------------------------------------------------------- palettes ----
+% Colours are named by hue, never by brand, so the same figure source renders in
+% whichever palette the document asks for. Every palette defines the same ten
+% hues plus a near-white tint of each; where a brand has no such hue, it lends
+% its nearest one, which is what the comments below record.
+
+% Apple system colours, with hand-picked tints.
+\newcommand{\texfig@palette@apple}{%
+  \definecolor{tfBlue}{RGB}{0, 122, 255}%
+  \definecolor{tfLightBlue}{RGB}{235, 245, 255}%
+  \definecolor{tfRed}{RGB}{255, 59, 48}%
+  \definecolor{tfLightRed}{RGB}{255, 235, 235}%
+  \definecolor{tfGreen}{RGB}{52, 199, 89}%
+  \definecolor{tfLightGreen}{RGB}{235, 255, 235}%
+  \definecolor{tfGray}{RGB}{142, 142, 147}%
+  \definecolor{tfLightGray}{RGB}{242, 242, 247}%
+  \definecolor{tfDarkGray}{RGB}{44, 44, 46}%
+  \definecolor{tfDark}{RGB}{28, 28, 30}%
+  \definecolor{tfPurple}{RGB}{175, 82, 222}%
+  \definecolor{tfLightPurple}{RGB}{243, 233, 255}%
+  \definecolor{tfOrange}{RGB}{255, 149, 0}%
+  \definecolor{tfLightOrange}{RGB}{255, 235, 205}%
+  \definecolor{tfTeal}{RGB}{48, 176, 199}%
+  \definecolor{tfLightTeal}{RGB}{213, 240, 245}%
+  \definecolor{tfPink}{RGB}{255, 45, 133}%
+  \definecolor{tfLightPink}{RGB}{255, 232, 241}%
+}
+
+% TUM corporate design: the signature blue, the two secondary colours and the
+% ten-colour CI chart palette. Pink has no CI counterpart and borrows the dark
+% red of the chart palette.
+\newcommand{\texfig@palette@tum}{%
+  \definecolor{tfBlue}{HTML}{0065BD}%     Pantone 300, signature
+  \definecolor{tfRed}{HTML}{C4071B}%      CI chart red
+  \definecolor{tfGreen}{HTML}{007C30}%    CI chart green
+  \definecolor{tfGray}{HTML}{808080}%     TUM gray 50
+  \definecolor{tfDarkGray}{HTML}{333333}% TUM gray 80
+  \definecolor{tfDark}{HTML}{1A1A1A}%     TUM black
+  \definecolor{tfPurple}{HTML}{69085A}%   CI chart purple
+  \definecolor{tfOrange}{HTML}{E37222}%   Pantone 158
+  \definecolor{tfTeal}{HTML}{00778A}%     CI chart teal
+  \definecolor{tfPink}{HTML}{9C0D16}%     CI chart dark red, nearest hue
+  \texfig@tints
+  \definecolor{tfLightGray}{HTML}{F5F8FB}%
+}
+
+% Hines corporate design. The brand is built on red and warm neutrals, so blue,
+% teal, purple and pink borrow its cool and deep accents.
+\newcommand{\texfig@palette@hines}{%
+  \definecolor{tfBlue}{HTML}{70B1C9}%     PMS 7458, the cool accent
+  \definecolor{tfRed}{HTML}{BF2032}%      PMS 187, signature
+  \definecolor{tfGreen}{HTML}{90993F}%    PMS 7495 olive
+  \definecolor{tfGray}{HTML}{6A737B}%     PMS 431
+  \definecolor{tfDarkGray}{HTML}{404850}% PMS 431 darkened
+  \definecolor{tfDark}{HTML}{1A1A1A}%     near-black body text
+  \definecolor{tfPurple}{HTML}{8B0F04}%   PMS 188, the deep accent
+  \definecolor{tfOrange}{HTML}{E1592B}%   PMS 7579
+  \definecolor{tfTeal}{HTML}{9BB7D4}%     PMS 644, the second cool accent
+  \definecolor{tfPink}{HTML}{EA6953}%     PMS 7416 coral, nearest hue
+  \texfig@tints
+  \definecolor{tfLightGray}{HTML}{F3F3F1}%
+}
+
+% The tints a brand palette does not spell out: a wash of the hue on white.
+\newcommand{\texfig@tints}{%
+  \colorlet{tfLightBlue}{tfBlue!10!white}%
+  \colorlet{tfLightRed}{tfRed!10!white}%
+  \colorlet{tfLightGreen}{tfGreen!10!white}%
+  \colorlet{tfLightPurple}{tfPurple!10!white}%
+  \colorlet{tfLightOrange}{tfOrange!10!white}%
+  \colorlet{tfLightTeal}{tfTeal!10!white}%
+  \colorlet{tfLightPink}{tfPink!10!white}%
+}
+
+\@ifundefined{texfig@palette@\texfig@palette}
+  {\PackageError{texfig}{Unknown palette `\texfig@palette'}
+    {The palette option takes apple, tum or hines.}}
+  {\csname texfig@palette@\texfig@palette\endcsname}
+
+% ------------------------------------------------------------------ fonts ----
+% Mirrors the font names of the TUM article class, so a preview and the paper
+% that includes the figure are set in the same face.
+\newcommand{\texfig@font@times}{%
+  \RequirePackage[largesc]{newtxtext}\RequirePackage[bigdelims,varbb]{newtxmath}}
+\newcommand{\texfig@font@palatino}{%
+  \RequirePackage{newpxtext}\RequirePackage[bigdelims,varbb]{newpxmath}}
+\newcommand{\texfig@font@libertine}{%
+  \RequirePackage{libertine}\RequirePackage[libertine,bigdelims,varbb]{newtxmath}}
+\newcommand{\texfig@font@helvet}{%
+  \RequirePackage[scaled]{helvet}\renewcommand{\familydefault}{\sfdefault}}
+\newcommand{\texfig@font@inherit}{}
+
+\@ifundefined{texfig@font@\texfig@font}
+  {\PackageError{texfig}{Unknown font `\texfig@font'}
+    {The font option takes inherit, times, helvet, palatino or libertine.}}
+  {\csname texfig@font@\texfig@font\endcsname}
 
 % Target width of a figure; the including document may override it.
 \providecommand{\tffigwidth}{\linewidth}
@@ -52,14 +140,14 @@
 \newcommand{\tfcol}[2]{0,#2 -| #1}
 
 % The two slashes that cut an arrow where a gradient is stopped.
-%   \tfcutmark[appleOrange]{(5.2,0)}
-\newcommand{\tfcutmark}[2][appleGray]{%
+%   \tfcutmark[tfOrange]{(5.2,0)}
+\newcommand{\tfcutmark}[2][tfGray]{%
   \draw[line width=1.5pt, draw=#1]
     ($#2+(-0.20,-0.24)$) -- ++(0.20,0.48)
     ($#2+(0.04,-0.24)$)  -- ++(0.20,0.48);}
 
 % A literal value inside a field line.
-\newcommand{\tflit}[1]{\textcolor{appleBlue!55!black}{#1}}
+\newcommand{\tflit}[1]{\textcolor{tfBlue!55!black}{#1}}
 % The darkened text tone every accent colour uses for type.
 \newcommand{\tfink}[1]{#1!62!black}
 
@@ -68,14 +156,14 @@
   % Solid light grey panel grouping one column of a picture. Background layer.
   tfpanel/.style={
     rounded corners=12pt,
-    fill=appleLightGray!55,
-    draw=appleGray!30,
+    fill=tfLightGray!55,
+    draw=tfGray!30,
     line width=0.6pt,
     inner sep=0.40cm},
   % Same panel tinted in an accent colour.
   tfpanelc/.style={tfpanel, fill=#1!7, draw=#1!30},
   % Dashed coloured group box with its title sitting above the frame.
-  % Usage: node[tfgroup={appleGreen}{Inputs}, fit=(a)(b)] {};
+  % Usage: node[tfgroup={tfGreen}{Inputs}, fit=(a)(b)] {};
   tfgroup/.style 2 args={
     rounded corners=10pt,
     draw=#1!75,
@@ -88,7 +176,7 @@
   tfcard/.style={
     rounded corners=8pt,
     fill=white,
-    draw=appleGray!45,
+    draw=tfGray!45,
     line width=0.7pt,
     inner sep=9pt},
   % Same card tinted in an accent colour.
@@ -96,30 +184,30 @@
   % Card header, its accent-coloured variant, and the one-line gloss under it.
   tfcardtitle/.style={
     font=\small\ttfamily,
-    text=appleDark,
+    text=tfDark,
     anchor=west,
     inner sep=0pt},
   tfcardtitlec/.style={tfcardtitle, text=#1!62!black},
   tfcardsubtitle/.style={
     font=\scriptsize\itshape,
-    text=appleGray,
+    text=tfGray,
     anchor=west,
     inner sep=0pt},
   % One property, value or example line inside a card.
   tffield/.style={
     font=\footnotesize\ttfamily,
-    text=appleDarkGray,
+    text=tfDarkGray,
     anchor=west,
     inner sep=0pt},
   % Running text inside a card, for an example rather than a property.
   tfprose/.style={
     font=\scriptsize,
-    text=appleDarkGray,
+    text=tfDarkGray,
     anchor=north west,
     align=left,
     inner sep=0pt},
   % Pill label: 10 percent fill, matching stroke, darkened text.
-  % Usage: node[tfpill={applePurple}{4.7cm}] {Name\\[1pt]{\tiny type}};
+  % Usage: node[tfpill={tfPurple}{4.7cm}] {Name\\[1pt]{\tiny type}};
   tfpill/.style 2 args={
     rounded corners=7pt,
     fill=#1!10,
@@ -193,28 +281,28 @@
   tfop/.style={
     circle,
     fill=white,
-    draw=appleGray!70,
+    draw=tfGray!70,
     line width=0.8pt,
     inner sep=1.5pt,
-    text=appleDarkGray,
+    text=tfDarkGray,
     font=\small},
   % Dashed outline with no fill, for something produced rather than held.
   tfghost/.style={
     rounded corners=8pt,
     fill=white,
-    draw=appleGray!65,
+    draw=tfGray!65,
     line width=0.9pt,
     dash pattern=on 3pt off 2.5pt,
     minimum width=1.7cm,
     minimum height=0.9cm,
     inner sep=5pt,
-    text=appleDark,
+    text=tfDark,
     font=\small},
   % White card for a displayed equation, and a coloured callout beside it.
   tfformula/.style={
     rounded corners=10pt,
     fill=white,
-    draw=appleGray!35,
+    draw=tfGray!35,
     line width=0.8pt,
     inner sep=0.42cm,
     align=left},
@@ -230,26 +318,26 @@
   % Title of a figure section, set above the panel it names.
   tftitle/.style={
     font=\large\bfseries,
-    text=appleDark,
+    text=tfDark,
     anchor=south west,
     inner sep=4pt},
   % Grey gloss set underneath a panel or a group.
   tfcaption/.style={
     font=\scriptsize,
-    text=appleGray,
+    text=tfGray,
     align=center},
   % Free-standing label in the document tone, for something named but not boxed:
   % the caption of an icon, the input or the output at the end of an arrow.
   tflabel/.style={
     font=\small,
-    text=appleDarkGray,
+    text=tfDarkGray,
     align=center},
   tflabelc/.style={tflabel, text=#1!62!black},
   % Arrows. tfelbow adds the corner radius an orthogonal route needs.
   tfarrow/.style={
     -{Latex[length=2.6mm,width=1.9mm]},
     line width=0.9pt,
-    draw=appleGray!75,
+    draw=tfGray!75,
     rounded corners=2pt},
   tfarrowc/.style={tfarrow, draw=#1},
   tfarrowdashed/.style={tfarrow, dash pattern=on 3pt off 2.2pt},
@@ -258,7 +346,7 @@
   % Label riding on an arrow; the white fill keeps it legible over an edge.
   tfedgelabel/.style={
     font=\scriptsize\ttfamily,
-    text=appleDarkGray,
+    text=tfDarkGray,
     fill=white,
     inner sep=1.5pt,
     rounded corners=2pt},

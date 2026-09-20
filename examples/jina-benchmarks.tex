@@ -30,7 +30,7 @@
   xlabel={Pixels per visual token},
   yticklabels={PaddleOCR-VL-1.6, dots.mocr, HunyuanOCR-1.5, olmOCR-2,
     LightOnOCR-2, DeepSeek-OCR-2, DeepSeek-OCR, \textbf{Jina-OCR-v1}}]
-  \addplot[tfbar=appleGray] coordinates {
+  \addplot[tfbar=tfGray] coordinates {
     (783,PaddleOCR-VL-1.6) [783]
     (784,dots.mocr) [784]
     (1022,HunyuanOCR-1.5) [1,022]
@@ -38,7 +38,7 @@
     (783,LightOnOCR-2) [783]
     (4098,DeepSeek-OCR-2) [4,098]
     (3849,DeepSeek-OCR) [3,849]};
-  \addplot[tfbar=applePurple] coordinates {(3887,Jina-OCR-v1) [3,887]};
+  \addplot[tfbar=tfPurple] coordinates {(3887,Jina-OCR-v1) [3,887]};
 \end{axis}
 
 % ===================================================================
@@ -48,7 +48,7 @@
   width=6.2cm, height=8.2cm,
   xmin=0, xmax=3.2, xtick={0,1,2,3},
   xlabel={Throughput (pages/s)}, yticklabels={,,,,,,,}]
-  \addplot[tfbar=appleGray] coordinates {
+  \addplot[tfbar=tfGray] coordinates {
     (0.33,PaddleOCR-VL-1.6) [0.33]
     (0.55,dots.mocr) [0.55]
     (0.83,HunyuanOCR-1.5) [0.83]
@@ -56,7 +56,7 @@
     (1.33,LightOnOCR-2) [1.33]
     (1.50,DeepSeek-OCR-2) [1.50]
     (2.10,DeepSeek-OCR) [2.10]};
-  \addplot[tfbar=applePurple] coordinates {(2.57,Jina-OCR-v1) [2.57]};
+  \addplot[tfbar=tfPurple] coordinates {(2.57,Jina-OCR-v1) [2.57]};
 \end{axis}
 
 % ===================================================================
@@ -68,12 +68,12 @@
   xticklabels={,,,,,}, ymin=74, ymax=88.5, ytick={76,80,84,88},
   ylabel={olmOCR-Bench}]
   \addplot[tftrend] coordinates {(0.48,74.5) (0.57,83.2) (4,86.0) (34,88.4)};
-  \addplot[tfpoint=appleGray] coordinates {
+  \addplot[tfpoint=tfGray] coordinates {
     (0.62,84.0) (1.0,82.3) (1.2,83.2) (4.0,86.0) (7.0,82.4) (8.0,82.4)
     (0.57,76.2) (1.2,75.6) (0.6,74.9)};
-  \addplot[tfline=applePurple] coordinates {(0.57,83.2) (1.2,83.2) (4.0,86.0)};
-  \addplot[tfstar=applePurple] coordinates {(0.57,83.2)};
-  \node[tfpointlabelc=applePurple, anchor=south] at (axis cs:0.60,85.2)
+  \addplot[tfline=tfPurple] coordinates {(0.57,83.2) (1.2,83.2) (4.0,86.0)};
+  \addplot[tfstar=tfPurple] coordinates {(0.57,83.2)};
+  \node[tfpointlabelc=tfPurple, anchor=south] at (axis cs:0.60,85.2)
     {Jina-OCR-v1};
   \node[tfpointlabel, anchor=west]       at (axis cs:0.63,84.1) {dots.mocr};
   \node[tfpointlabel, anchor=west]       at (axis cs:1.08,82.3) {LightOnOCR-2};
@@ -92,10 +92,10 @@
   ymin=88, ymax=97.5, ytick={88,92,96},
   xlabel={Active parameters (B)}, ylabel={OmniDocBench}]
   \addplot[tftrend] coordinates {(0.48,88.2) (0.57,91.0) (0.9,96.3) (34,97.4)};
-  \addplot[tfpoint=appleGray] coordinates {(0.62,90.2) (0.9,96.3) (1.0,94.7) (21,89.8)};
-  \addplot[tfline=applePurple] coordinates {(0.57,91.0) (0.9,96.3)};
-  \addplot[tfstar=applePurple] coordinates {(0.57,91.0)};
-  \node[tfpointlabelc=applePurple, anchor=west] at (axis cs:0.66,91.0) {Jina-OCR-v1};
+  \addplot[tfpoint=tfGray] coordinates {(0.62,90.2) (0.9,96.3) (1.0,94.7) (21,89.8)};
+  \addplot[tfline=tfPurple] coordinates {(0.57,91.0) (0.9,96.3)};
+  \addplot[tfstar=tfPurple] coordinates {(0.57,91.0)};
+  \node[tfpointlabelc=tfPurple, anchor=west] at (axis cs:0.66,91.0) {Jina-OCR-v1};
   \node[tfpointlabel, anchor=north west] at (axis cs:0.6,89.9)  {DeepSeek-OCR-2};
   \node[tfpointlabel, anchor=west]       at (axis cs:0.97,96.3) {PaddleOCR-VL-1.6};
   \node[tfpointlabel, anchor=west]       at (axis cs:1.08,94.7) {HunyuanOCR-1.5};

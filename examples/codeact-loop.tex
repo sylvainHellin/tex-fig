@@ -18,90 +18,90 @@
 % Cards
 % ===================================================================
 % --- what the user supplies ---------------------------------------
-\node[tfcardtitlec=appleGreen] (qTitle) at (3.6,12.0) {Question};
+\node[tfcardtitlec=tfGreen] (qTitle) at (3.6,12.0) {Question};
 \node[tfprose, text width=4.6cm] (qBody) at (3.6,11.55)
       {e.g. `What is the total volume of concrete used for the foundation?'};
-\node[tfcardtitlec=appleGreen] (bTitle) at (3.6,9.4) {BIM Model};
+\node[tfcardtitlec=tfGreen] (bTitle) at (3.6,9.4) {BIM Model};
 \node[tfprose, text width=4.6cm] (bBody) at (3.6,8.95)
       {e.g. \texttt{duplex\_house/arc.ifc}};
 
 % --- what the environment offers ----------------------------------
-\node[tfcardtitlec=appleBlue] (tTitle) at (3.6,5.6) {Tools};
+\node[tfcardtitlec=tfBlue] (tTitle) at (3.6,5.6) {Tools};
 \node[tfprose, text width=4.6cm] (tBody) at (3.6,5.15)
       {e.g. \texttt{categorize\_element\_by\_properties}};
-\node[tfcardtitlec=appleBlue] (sTitle) at (3.6,3.2) {Special tool};
+\node[tfcardtitlec=tfBlue] (sTitle) at (3.6,3.2) {Special tool};
 \node[tfprose, text width=4.6cm] (sBody) at (3.6,2.75)
       {\texttt{query\_ifcopenshell\_documentation}};
 
 % --- what the model produces --------------------------------------
-\node[tfcardtitlec=applePink] (thTitle) at (14.8,6.9) {Thoughts};
+\node[tfcardtitlec=tfPink] (thTitle) at (14.8,6.9) {Thoughts};
 \node[tfprose, text width=4.4cm] (thBody) at (14.8,6.45)
       {e.g. `In order to find the total volume of concrete used, I need to [...]'};
-\node[tfcardtitlec=applePink] (pcTitle) at (14.8,4.3) {Python Code};
+\node[tfcardtitlec=tfPink] (pcTitle) at (14.8,4.3) {Python Code};
 \node[tfprose, text width=4.4cm] (pcBody) at (14.8,3.85)
       {e.g. \texttt{"import ifcopenshell model = ifcopenshell.open("...}};
 
 % --- what comes back out ------------------------------------------
-\node[tfcardtitlec=applePink] (aTitle) at (13.6,15.0) {Answer};
+\node[tfcardtitlec=tfPink] (aTitle) at (13.6,15.0) {Answer};
 \node[tfprose, text width=4.4cm] (aBody) at (13.6,14.55)
       {e.g. `33\,m$^3$ of concrete were used for the foundation'};
 
 \begin{scope}[on background layer]
-  \node[tfcardc=appleGreen, fit=(qTitle)(qBody)]   (cardQ)  {};
-  \node[tfcardc=appleGreen, fit=(bTitle)(bBody)]   (cardB)  {};
-  \node[tfcardc=appleBlue,  fit=(tTitle)(tBody)]   (cardT)  {};
-  \node[tfcardc=appleBlue,  fit=(sTitle)(sBody)]   (cardS)  {};
-  \node[tfcardc=applePink,  fit=(thTitle)(thBody)] (cardTh) {};
-  \node[tfcardc=applePink,  fit=(pcTitle)(pcBody)] (cardPc) {};
-  \node[tfcardc=applePink,  fit=(aTitle)(aBody)]   (cardA)  {};
+  \node[tfcardc=tfGreen, fit=(qTitle)(qBody)]   (cardQ)  {};
+  \node[tfcardc=tfGreen, fit=(bTitle)(bBody)]   (cardB)  {};
+  \node[tfcardc=tfBlue,  fit=(tTitle)(tBody)]   (cardT)  {};
+  \node[tfcardc=tfBlue,  fit=(sTitle)(sBody)]   (cardS)  {};
+  \node[tfcardc=tfPink,  fit=(thTitle)(thBody)] (cardTh) {};
+  \node[tfcardc=tfPink,  fit=(pcTitle)(pcBody)] (cardPc) {};
+  \node[tfcardc=tfPink,  fit=(aTitle)(aBody)]   (cardA)  {};
 \end{scope}
 
 % ===================================================================
 % Group boxes around the cards
 % ===================================================================
 \begin{pgfonlayer}{grouping}
-  \node[tfgroup={appleGreen}{Inputs},      fit=(cardQ)(cardB)]   (grpIn)  {};
-  \node[tfgroup={appleBlue}{Resources},    fit=(cardT)(cardS)]   (grpRes) {};
-  \node[tfgroup={applePink}{Final output}, fit=(cardA)]          (grpAns) {};
+  \node[tfgroup={tfGreen}{Inputs},      fit=(cardQ)(cardB)]   (grpIn)  {};
+  \node[tfgroup={tfBlue}{Resources},    fit=(cardT)(cardS)]   (grpRes) {};
+  \node[tfgroup={tfPink}{Final output}, fit=(cardA)]          (grpAns) {};
 \end{pgfonlayer}
 
 % ===================================================================
 % Blocks, each on the line of what it exchanges with
 % ===================================================================
-\node[tfblock={appleGray}{2.2cm}]     (user)  at (\tfrow{0}{grpIn.west})    {User};
-\node[tfblock={applePink}{3.4cm}]     (llm)   at (\tfrow{14.2}{grpIn.east}) {LLM};
-\node[tfblock={appleDarkGray}{3.6cm}] (pyint) at (\tfrow{23.2}{cardPc.east})
+\node[tfblock={tfGray}{2.2cm}]     (user)  at (\tfrow{0}{grpIn.west})    {User};
+\node[tfblock={tfPink}{3.4cm}]     (llm)   at (\tfrow{14.2}{grpIn.east}) {LLM};
+\node[tfblock={tfDarkGray}{3.6cm}] (pyint) at (\tfrow{23.2}{cardPc.east})
       {Python\\Interpreter};
-\node[tfblock={appleDarkGray}{3.6cm}] (evres) at (\tfcol{pyint.north}{8.6})
+\node[tfblock={tfDarkGray}{3.6cm}] (evres) at (\tfcol{pyint.north}{8.6})
       {Evaluation\\Result};
 
 % the loop box is drawn before the Outputs group it contains, so its fill does
 % not cover the inner box: on one layer, the later node wins
 \begin{pgfonlayer}{grouping}
-  \node[tfgroup={appleDark}{CodeAct loop}, inner sep=0.85cm,
+  \node[tfgroup={tfDark}{CodeAct loop}, inner sep=0.85cm,
         fit=(llm)(cardTh)(cardPc)(pyint)(evres)] (loop) {};
-  \node[tfgroup={applePink}{Outputs}, fit=(cardTh)(cardPc)] (grpOut) {};
+  \node[tfgroup={tfPink}{Outputs}, fit=(cardTh)(cardPc)] (grpOut) {};
 \end{pgfonlayer}
 
 % ===================================================================
 % Wiring
 % ===================================================================
 % the user asks, and the question plus the model reach the LLM
-\draw[tfarrowc=appleGreen] (user.east)  -- (grpIn.west);
-\draw[tfarrowc=appleGreen] (grpIn.east) -- (llm.west);
+\draw[tfarrowc=tfGreen] (user.east)  -- (grpIn.west);
+\draw[tfarrowc=tfGreen] (grpIn.east) -- (llm.west);
 % the environment offers tools to the model and a runtime to execute in
-\draw[tfarrowc=appleBlue, tfelbow] (grpRes.east) -- ++(1.9,0)
+\draw[tfarrowc=tfBlue, tfelbow] (grpRes.east) -- ++(1.9,0)
       |- ($(llm.west)+(0,-0.40)$);
-\draw[tfarrowc=appleBlue, tfelbow] ($(grpRes.east)+(1.9,0)$) |- ($(loop.south)+(0,-0.7)$)
+\draw[tfarrowc=tfBlue, tfelbow] ($(grpRes.east)+(1.9,0)$) |- ($(loop.south)+(0,-0.7)$)
       -| (pyint.south);
 % the model emits a thought and the code that follows from it
-\draw[tfarrowc=applePink] (llm.south) -- (llm.south |- grpOut.north);
+\draw[tfarrowc=tfPink] (llm.south) -- (llm.south |- grpOut.north);
 % the code is executed and its result goes back to the model
-\draw[tfarrowc=appleDarkGray] (cardPc.east) -- (pyint.west);
-\draw[tfarrowc=appleDarkGray] (pyint.north) -- (evres.south);
-\draw[tfarrowc=appleDarkGray, tfelbow] (evres.west) -- ++(-1.1,0) |- (llm.east);
+\draw[tfarrowc=tfDarkGray] (cardPc.east) -- (pyint.west);
+\draw[tfarrowc=tfDarkGray] (pyint.north) -- (evres.south);
+\draw[tfarrowc=tfDarkGray, tfelbow] (evres.west) -- ++(-1.1,0) |- (llm.east);
 % once the model is done it answers, and the answer reaches the user
-\draw[tfarrowc=applePink] (llm.north) -- (llm.north |- grpAns.south);
-\draw[tfarrowc=applePink, tfelbow] (grpAns.west) -| (user.north);
+\draw[tfarrowc=tfPink] (llm.north) -- (llm.north |- grpAns.south);
+\draw[tfarrowc=tfPink, tfelbow] (grpAns.west) -| (user.north);
 
 \end{tikzpicture}}

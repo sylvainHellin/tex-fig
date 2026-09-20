@@ -16,14 +16,14 @@
 % ===================================================================
 \foreach \name/\x/\s in {ca/3.9/1, cb/9.9/2, cc/17.1/M} {
   \node[tflabel, font=\small\bfseries] (\name h) at (\x,1.15) {Chunk $\s$};
-  \draw[tfglyph=appleRed]   (\x-0.95,0.05) ellipse (0.17 and 0.52);
-  \draw[tfglyph=appleBlue]  (\x,0.05)      ellipse (0.45 and 0.32);
-  \draw[tfglyph=appleGreen] (\x+0.95,0.05) ellipse (0.17 and 0.52);
-  \node[tflabelc=appleRed, font=\scriptsize]   (\name q) at (\x-0.95,-0.85)
+  \draw[tfglyph=tfRed]   (\x-0.95,0.05) ellipse (0.17 and 0.52);
+  \draw[tfglyph=tfBlue]  (\x,0.05)      ellipse (0.45 and 0.32);
+  \draw[tfglyph=tfGreen] (\x+0.95,0.05) ellipse (0.17 and 0.52);
+  \node[tflabelc=tfRed, font=\scriptsize]   (\name q) at (\x-0.95,-0.85)
         {$\mathbf{Q}_{\s}$};
-  \node[tflabelc=appleBlue, font=\scriptsize]  (\name k) at (\x,-0.85)
+  \node[tflabelc=tfBlue, font=\scriptsize]  (\name k) at (\x,-0.85)
         {$\mathbf{K}_{\s}^\top$};
-  \node[tflabelc=appleGreen, font=\scriptsize] (\name v) at (\x+0.95,-0.85)
+  \node[tflabelc=tfGreen, font=\scriptsize] (\name v) at (\x+0.95,-0.85)
         {$\mathbf{V}_{\s}$};
   \begin{scope}[on background layer]
     \node[tfcard, inner sep=0.3cm, fit=(\name h)(\name q)(\name k)(\name v)]
@@ -35,26 +35,26 @@
 % The state handed from one chunk to the next, pinned to the line of the
 % chunk cards so every arrow along the scan is horizontal
 % ===================================================================
-\node[tfdot=appleGray, minimum size=1.2cm] (s0) at (\tfrow{0.9}{ca.west})  {$\mathbf{S}^{(0)}$};
-\node[tfdot=appleGray, minimum size=1.2cm] (s1) at (\tfrow{6.9}{ca.west})  {$\mathbf{S}^{(1)}$};
-\node[tfdot=appleGray, minimum size=1.2cm] (s2) at (\tfrow{12.9}{ca.west}) {$\mathbf{S}^{(2)}$};
+\node[tfdot=tfGray, minimum size=1.2cm] (s0) at (\tfrow{0.9}{ca.west})  {$\mathbf{S}^{(0)}$};
+\node[tfdot=tfGray, minimum size=1.2cm] (s1) at (\tfrow{6.9}{ca.west})  {$\mathbf{S}^{(1)}$};
+\node[tfdot=tfGray, minimum size=1.2cm] (s2) at (\tfrow{12.9}{ca.west}) {$\mathbf{S}^{(2)}$};
 \node[tflabel, font=\large]                (dots) at (\tfrow{15.0}{ca.west}) {$\cdots$};
-\node[tfdot=appleGray, minimum size=1.2cm] (sm) at (\tfrow{20.1}{ca.west}) {$\mathbf{S}^{(M)}$};
+\node[tfdot=tfGray, minimum size=1.2cm] (sm) at (\tfrow{20.1}{ca.west}) {$\mathbf{S}^{(M)}$};
 
-\draw[tfarrowc=appleGreen] (s0.east) -- (ca.west);
-\draw[tfarrowc=appleGreen] (ca.east) -- (s1.west);
-\draw[tfarrowc=appleGreen] (s1.east) -- (cb.west);
-\draw[tfarrowc=appleGreen] (cb.east) -- (s2.west);
-\draw[tfarrowc=appleGreen] (s2.east) -- (dots.west);
-\draw[tfarrowc=appleGreen] (dots.east) -- (cc.west);
-\draw[tfarrowc=appleGreen] (cc.east) -- (sm.west);
+\draw[tfarrowc=tfGreen] (s0.east) -- (ca.west);
+\draw[tfarrowc=tfGreen] (ca.east) -- (s1.west);
+\draw[tfarrowc=tfGreen] (s1.east) -- (cb.west);
+\draw[tfarrowc=tfGreen] (cb.east) -- (s2.west);
+\draw[tfarrowc=tfGreen] (s2.east) -- (dots.west);
+\draw[tfarrowc=tfGreen] (dots.east) -- (cc.west);
+\draw[tfarrowc=tfGreen] (cc.east) -- (sm.west);
 
 % ===================================================================
 % What each chunk emits on its own
 % ===================================================================
 \foreach \name/\s in {ca/1, cb/2, cc/M} {
   \node[tfghost] (\name o) at (\tfcol{\name.south}{-3.0}) {$\mathbf{O}^{(\s)}$};
-  \draw[tfarrowc=appleRed] (\name.south) -- (\name o.north);
+  \draw[tfarrowc=tfRed] (\name.south) -- (\name o.north);
 }
 
 % ===================================================================
@@ -68,7 +68,7 @@
         _{\text{\scriptsize intra-chunk (parallel)}}$\\[10pt]
        $\mathbf{S}^{(k)} = \mathbf{S}^{(k-1)}
         + \phi(\mathbf{K}^{(k)})^\top\mathbf{V}^{(k)}$};
-\node[tfnote=appleGreen] (cost) at (\tfrow{18.4}{eq.east})
+\node[tfnote=tfGreen] (cost) at (\tfrow{18.4}{eq.east})
       {$\mathcal{O}(NC)$ time\\$M = N/C$ sequential steps};
 
 \begin{pgfonlayer}{grouping}

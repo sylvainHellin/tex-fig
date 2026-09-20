@@ -20,22 +20,33 @@ Nodes that a panel must sit behind go on the `background` layer, and the panel i
 \begin{document}
 \resizebox{\tffigwidth}{!}{%
 \begin{tikzpicture}
-  \node[tfcardtitlec=appleBlue] (t) at (0,2) {A card};
+  \node[tfcardtitlec=tfBlue] (t) at (0,2) {A card};
   \node[tffield] (f) at (0,1.5) {one field line};
   \begin{scope}[on background layer]
     \node[tfcard, fit=(t)(f)] (card) {};
   \end{scope}
-  \node[tfpill={appleOrange}{3cm}] (p) at (7,1.75) {a value\\[1pt]{\tiny its type}};
-  \draw[tfarrowc=appleOrange] (card.east) -- (p.west)
-    node[tfedgelabelc=appleOrange, pos=0.5] {relates to};
+  \node[tfpill={tfOrange}{3cm}] (p) at (7,1.75) {a value\\[1pt]{\tiny its type}};
+  \draw[tfarrowc=tfOrange] (card.east) -- (p.west)
+    node[tfedgelabelc=tfOrange, pos=0.5] {relates to};
 \end{tikzpicture}}
 \end{document}
 ```
 
+## Options
+
+```latex
+\usepackage[palette=tum, font=times]{texfig}
+```
+
+`palette` picks the brand the hues come from: `apple` (the default), `tum` or `hines`.
+Figures name colours by hue and never by brand, so the same source renders in any of them; a hue a brand does not have borrows its nearest one, which the palette block of `texfig.sty` records colour by colour.
+`font` exists for standalone previews, where no document class sets a face and a render would otherwise come out in Computer Modern: it takes `inherit` (the default), `times`, `helvet`, `palatino` or `libertine`, the same names the TUM article class uses.
+Inside a real document, leave `font` alone and let the class decide.
+
 ## Choosing a colour
 
-The palette defines `appleBlue`, `appleGreen`, `appleOrange`, `applePurple`, `appleRed`, `applePink`, `appleTeal`, `appleGray`, `appleDarkGray` and `appleDark`, each with a near-white `appleLight...` tint.
-Every style that carries a colour takes it as an argument rather than existing once per colour: `tfcardc=appleGreen`, `tfpill={applePurple}{4.7cm}`, `tfarrowc=appleBlue`, `tfgroup={appleRed}{Title}`.
+The palette defines `tfBlue`, `tfGreen`, `tfOrange`, `tfPurple`, `tfRed`, `tfPink`, `tfTeal`, `tfGray`, `tfDarkGray` and `tfDark`, each with a near-white `tfLight...` tint.
+Every style that carries a colour takes it as an argument rather than existing once per colour: `tfcardc=tfGreen`, `tfpill={tfPurple}{4.7cm}`, `tfarrowc=tfBlue`, `tfgroup={tfRed}{Title}`.
 Text on an accent colour is darkened to `#1!62!black` so it stays legible against the 10 percent fill.
 Pick colours by role and keep the mapping constant across the figures of one paper.
 
@@ -101,5 +112,12 @@ Place several panels by giving each `axis` an explicit `at={(<x>cm,<y>cm)}, anch
 
 ## Using it in a paper
 
-Overleaf needs the package inside the project tree, so copy `texfig.sty` next to the manuscript and update it by copying again when the kit changes.
+An Overleaf project compiles from its own tree alone, so the package has to be vendored into it:
+
+```sh
+./sync.sh ~/code/tum/ocdi/paper
+```
+
+The copy carries the commit it came from in its second line, which makes a stale one visible in a diff, and the script refuses to run from a dirty tree so that stamp cannot lie.
+`texfig-plots.sty` follows only into a target that already had it.
 In the document, load it with `\usepackage{texfig}` and input a figure inside `figure` or `figure*`.
