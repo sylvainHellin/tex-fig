@@ -12,7 +12,7 @@
 set -euo pipefail
 
 dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-dpi=${2:-150}
+dpi=${2:-300}  # PNGs end up in reports and mail, not only previews
 out=$HOME/Documents/tmp
 palette=${PALETTE:-apple}
 font=${FONT:-times}
