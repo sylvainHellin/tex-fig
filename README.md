@@ -41,6 +41,7 @@ Nodes that a panel must sit behind go on the `background` layer, and the panel i
 `palette` picks the brand the hues come from: `apple` (the default), `tum` or `hines`.
 Figures name colours by hue and never by brand, so the same source renders in any of them; a hue a brand does not have borrows its nearest one, which the palette block of `texfig.sty` records colour by colour.
 `font` exists for standalone previews, where no document class sets a face and a render would otherwise come out in Computer Modern: it takes `inherit` (the default), `times`, `helvet`, `palatino` or `libertine`, the same names the TUM article class uses.
+Under XeTeX or LuaTeX, which is what tectonic runs, `helvet` loads TeX Gyre Heros through fontspec, since the Type 1 Helvetica of the `helvet` package does not exist in the TU encoding; pdfLaTeX keeps the `helvet` package.
 Inside a real document, leave `font` alone and let the class decide.
 
 ## Choosing a colour

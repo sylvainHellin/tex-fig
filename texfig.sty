@@ -21,6 +21,7 @@
 \RequirePackage{xcolor}
 \RequirePackage{tikz}
 \RequirePackage{graphicx}
+\RequirePackage{iftex}
 
 \usetikzlibrary{positioning, calc, shapes.geometric, arrows.meta, backgrounds,
                 fit, matrix, decorations.pathreplacing, shadows.blur}
@@ -118,8 +119,19 @@
   \RequirePackage{newpxtext}\RequirePackage[bigdelims,varbb]{newpxmath}}
 \newcommand{\texfig@font@libertine}{%
   \RequirePackage{libertine}\RequirePackage[libertine,bigdelims,varbb]{newtxmath}}
+% helvet ships only OT1/T1 Type 1 metrics, so under XeTeX or LuaTeX (TU
+% encoding, which is what tectonic runs) it silently falls back to Latin Modern;
+% there the same face comes from TeX Gyre Heros, the OpenType Helvetica clone.
 \newcommand{\texfig@font@helvet}{%
-  \RequirePackage[scaled]{helvet}\renewcommand{\familydefault}{\sfdefault}}
+  \ifPDFTeX
+    \RequirePackage[scaled]{helvet}%
+  \else
+    \RequirePackage{fontspec}%
+    \setsansfont{texgyreheros}[Extension=.otf, Scale=0.95,
+      UprightFont=*-regular, BoldFont=*-bold,
+      ItalicFont=*-italic, BoldItalicFont=*-bolditalic]%
+  \fi
+  \renewcommand{\familydefault}{\sfdefault}}
 \newcommand{\texfig@font@inherit}{}
 
 \@ifundefined{texfig@font@\texfig@font}
