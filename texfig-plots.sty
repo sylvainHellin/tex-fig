@@ -31,11 +31,17 @@
     tick label style={font=\small, text=tfDarkGray},
     label style={font=\small, text=tfDarkGray},
     tick align=outside,
+    % tick labels in the text face: in math mode they would keep Computer
+    % Modern digits whenever the font option has no matching math font (helvet)
+    /pgf/number format/assume math mode=true,
     clip=false},
   % Horizontal bars against a category axis, which carries no line of its own.
   tfbaraxis/.style={
     tfaxis,
     xbar,
+    % every series on the category's centre line, so the highlighted bar drawn
+    % as a second series sits on its label instead of beside it
+    bar shift=0pt,
     axis x line*=bottom,
     % the category axis carries names, not a scale, so its rule and ticks go
     axis y line*=left,
