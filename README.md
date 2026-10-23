@@ -78,6 +78,14 @@ Pick colours by role and keep the mapping constant across the figures of one pap
 - `\tfcutmark[colour]{(x,y)}`: the two slashes that cut an arrow where a gradient is stopped.
 - `\tffigwidth`: the target width, defaulting to `\linewidth`.
 
+Traps that cost a render:
+
+- `tfpilltype` is a style, so it goes in the node options; `\tfpilltype` as a command does not compile.
+- The `x` of `\tfrow` and the `y` of `\tfcol` are numbers; an anchor there fails with an opaque PGF Math error.
+- A literal coordinate inside `fit=` needs braces, `fit={(a)(5.6,5.2)}`, or its comma breaks key parsing.
+- A local style must not shadow a TikZ key: a style named `join` breaks the build.
+- `\resizebox` scales the whole picture to the target width, so a canvas wider than about 4:1 shrinks its text below legibility; fold a long chain into two rows instead of setting labels `\tiny`.
+
 ## Examples
 
 `examples/ocdi-concept.tex` is the OCDI core-concept figure: cards, pills, panels, and arrows aligned so that the ones that can be horizontal are.
