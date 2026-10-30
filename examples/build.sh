@@ -9,11 +9,13 @@
 # PALETTE and FONT select what the preview is drawn with; a non-default palette
 # is written to its own file, so two palettes can be compared side by side.
 #   PALETTE=tum examples/build.sh ocdi-concept
+# OUT sets the output directory, for a figure whose PNG lives next to its source:
+#   OUT=design/figures examples/build.sh design/figures/arch.tex
 set -euo pipefail
 
 dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 dpi=${2:-300}  # PNGs end up in reports and mail, not only previews
-out=$HOME/Documents/tmp
+out=${OUT:-$HOME/Documents/tmp}
 palette=${PALETTE:-apple}
 font=${FONT:-times}
 

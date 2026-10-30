@@ -101,6 +101,7 @@ Build any of them with `examples/build.sh`, which generates the `standalone` wra
 ```sh
 examples/build.sh linattn-parallel      # one figure
 examples/build.sh all 200               # all of them, at 200 dpi
+OUT=figures examples/build.sh figures/f1.tex   # write the PNG next to its source
 ```
 
 ## Plots
