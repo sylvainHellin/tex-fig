@@ -1,0 +1,33 @@
+%% stepped-reveal.tex: a three-step reveal for a slide, built as one PNG per step.
+%%   STEPS=3 examples/build.sh stepped-reveal   -> stepped-reveal-{1,2,3}.png
+%%   examples/build.sh stepped-reveal           -> the full figure, as a paper shows it
+%% Step 1: the document. Step 2: the model and the arrow into it (tffrom on single
+%% nodes and paths). Step 3: the extracted values, their arrow and the panel
+%% around the pipeline (\tfshowfrom on a group, including a faded node that
+%% carries its own opacity and a panel on the grouping layer). The bounding
+%% box is the same in every step.
+\resizebox{\tffigwidth}{!}{%
+\begin{tikzpicture}
+  % Step 1: the input card.
+  \node[tfcardtitlec=tfBlue] (dt) at (0,1.9) {Drawing sheet};
+  \node[tffield] (d1) at (0,1.4) {A-201 floor plan};
+  \node[tffield] (d2) at (0,1.0) {scale \tflit{1:100}};
+  \begin{scope}[on background layer]
+    \node[tfcard, fit=(dt)(d1)(d2)] (doc) {};
+  \end{scope}
+
+  % Step 2: the model, and the arrow that feeds it.
+  \node[tfblock={tfPurple}{3.2cm}, tffrom=2] (vlm) at (\tfrow{6.2}{doc.east}) {VLM};
+  \draw[tfarrowc=tfPurple, tffrom=2] (doc.east) -- (vlm.west)
+    node[tfedgelabelc=tfPurple, pos=0.5, tffrom=2] {pages};
+
+  % Step 3: the values, the arrow into them and the panel around the pipeline.
+  \tfshowfrom{3}{
+    \node[tfpill={tfGreen}{3.4cm}] (out) at (\tfrow{11.4}{vlm.east}) {room: \tflit{Office 2.14}\\[1pt]{\tiny text field}};
+    \draw[tfarrowc=tfGreen] (vlm.east) -- (out.west);
+    \node[tfghost, opacity=0.5, minimum width=3.4cm, minimum height=0.7cm] (next) at (\tfcol{out.south}{0.2}) {next sheet};
+    \begin{pgfonlayer}{grouping}
+      \node[tfpanel, fit=(doc)(vlm)(out)(next)] {};
+    \end{pgfonlayer}
+  }
+\end{tikzpicture}}

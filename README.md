@@ -95,6 +95,9 @@ Traps that cost a render:
 
 `examples/fixed-point-forcing.tex` shows how to fade what a second panel repeats: put the repeated nodes in a `transparency group` scope with an `opacity`, which keeps overlapping strokes from showing through each other.
 `examples/linattn-{recurrent,parallel,chunkwise}.tex` are three views of the same operator, and the widest exercise of the kit: chips, chained states, dashed outputs, tall matrix operands with a clipped mask, formula cards and cost callouts.
+`examples/stepped-reveal.tex` is a slide figure that builds up in three steps: `tffrom=<n>` on a node or path, and `\tfshowfrom{<n>}{...}` around a group, show it from step `n` on.
+A plain build shows everything, so the same source serves a paper; hidden content is drawn transparent, so every step keeps the final bounding box and the slide does not jump.
+The group form also hides what it puts on the `background` or `grouping` layer and nodes that carry their own `opacity`, where the key form does not.
 
 Build any of them with `examples/build.sh`, which generates the `standalone` wrapper in a scratch directory and leaves a PNG in `~/Documents/tmp`:
 
@@ -102,6 +105,7 @@ Build any of them with `examples/build.sh`, which generates the `standalone` wra
 examples/build.sh linattn-parallel      # one figure
 examples/build.sh all 200               # all of them, at 200 dpi
 OUT=figures examples/build.sh figures/f1.tex   # write the PNG next to its source
+STEPS=3 examples/build.sh stepped-reveal       # one PNG per step, name-1.png to name-3.png
 ```
 
 ## Plots
